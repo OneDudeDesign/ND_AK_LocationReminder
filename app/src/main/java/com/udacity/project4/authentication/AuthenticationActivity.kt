@@ -3,15 +3,11 @@ package com.udacity.project4.authentication
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.View
-import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.firebase.ui.auth.AuthMethodPickerLayout
 import com.firebase.ui.auth.AuthUI
-import com.firebase.ui.auth.ErrorCodes
 import com.firebase.ui.auth.IdpResponse
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.udacity.project4.R
 import com.udacity.project4.locationreminders.RemindersActivity
@@ -35,8 +31,7 @@ class AuthenticationActivity : AppCompatActivity() {
         val auth = FirebaseAuth.getInstance()
         if (auth.currentUser != null) {
             //signed in
-            val intent = Intent(this, RemindersActivity::class.java)
-            startActivity(intent)
+            launchReminders()
         } else {
             // not signed in
             launchLogin()
@@ -61,9 +56,16 @@ class AuthenticationActivity : AppCompatActivity() {
         val providers = arrayListOf(
             AuthUI.IdpConfig.EmailBuilder().build(), AuthUI.IdpConfig.GoogleBuilder().build()
         )
+
+//        val customLayout = AuthMethodPickerLayout.Builder(R.layout.activity_authentication)
+//            .setEmailButtonId(R.id.auth_email_btn)
+//            .setGoogleButtonId(R.layout.fui_idp_button_google)
+//            .build()
+
         startActivityForResult(
             AuthUI.getInstance().createSignInIntentBuilder()
                 .setAvailableProviders(providers)
+                //.setAuthMethodPickerLayout(customLayout)
                 .setTheme(R.style.LoginTheme)
                 .build(),
             AUTHENTICATION_RESULT_CODE
@@ -77,8 +79,7 @@ class AuthenticationActivity : AppCompatActivity() {
             if (resultCode == Activity.RESULT_OK) {
                 // Successfully signed in user.
                 Timber.i("$TAG Successfully Signed in User ${FirebaseAuth.getInstance().currentUser?.displayName}")
-                val intent = Intent(this, RemindersActivity::class.java)
-                startActivity(intent)
+                launchReminders()
 
             } else {
                 // Sign in failed.
@@ -91,6 +92,12 @@ class AuthenticationActivity : AppCompatActivity() {
     private fun showToast(error: Any) {
         Toast.makeText(this, "$error", Toast.LENGTH_SHORT).show()
 
+    }
+
+    private fun launchReminders(){
+        val intent = Intent(this, RemindersActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(intent)
     }
 
 

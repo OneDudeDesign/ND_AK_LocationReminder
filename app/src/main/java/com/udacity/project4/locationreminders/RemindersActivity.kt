@@ -1,6 +1,7 @@
 package com.udacity.project4.locationreminders
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.MenuItem
@@ -30,5 +31,13 @@ class RemindersActivity : AppCompatActivity() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onBackPressed() {
+
+        //once the user is in the main screen prevent them gpoing back unless they logout
+        val intent = Intent(this, RemindersActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(intent)
     }
 }
