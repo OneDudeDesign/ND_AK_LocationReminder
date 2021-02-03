@@ -28,18 +28,24 @@ import com.udacity.project4.R
 import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.databinding.FragmentSelectLocationBinding
+import com.udacity.project4.locationreminders.reminderslist.ReminderListFragmentDirections
 import com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import org.koin.android.ext.android.inject
+import timber.log.Timber
 import java.util.*
 import kotlin.concurrent.fixedRateTimer
 
-class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
+class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, GoogleMap.OnMarkerDragListener {
 
     //Use Koin to get the view model of the SaveReminder
     override val _viewModel: SaveReminderViewModel by inject()
     private lateinit var binding: FragmentSelectLocationBinding
     private lateinit var map: GoogleMap
+    private lateinit var marker: Marker
+    private lateinit var markerStart: Marker
+    private lateinit var markerEnd: Marker
+    private var locationSelected = false
     private val REQUEST_LOCATION_PERMISSION = 1
 
     override fun onCreateView(
@@ -54,18 +60,23 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         setHasOptionsMenu(true)
         setDisplayHomeAsUpEnabled(true)
 
+
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-
-//        TODO: add the map setup implementation
-//        TODO: zoom to the user location after taking his permission
-//        TODO: add style to the map
-//        TODO: put a marker to location that the user selected
+        binding.btnSaveMapLocation.setOnClickListener {
+            checkForSetLocationAndNavigate()
+        }
 
 
-//        TODO: call this function after the user confirms on the selected location
-        onLocationSelected()
+//        DONE: add the map setup implementation
+//        DONE: zoom to the user location after taking his permission
+//        DONE: add style to the map
+//        DONE: put a marker to location that the user selected
+
+
+//        DONE: call this function after the user confirms on the selected location
+        //onLocationSelected()
 
         return binding.root
     }
@@ -74,6 +85,14 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         //        TODO: When the user confirms on the selected location,
         //         send back the selected location details to the view model
         //         and navigate back to the previous fragment to save the reminder and add the geofence
+        _viewModel.latitude.value = marker.position.latitude
+        _viewModel.longitude.value = marker.position.longitude
+        _viewModel.navigationCommand.postValue(
+            NavigationCommand.To(
+                SelectLocationFragmentDirections.actionSelectLocationFragmentToSaveReminderFragment()
+            )
+        )
+
     }
 
 
@@ -82,17 +101,25 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-        // TODO: Change the map type based on the user's selection.
+        // DONE: Change the map type based on the user's selection.
         R.id.normal_map -> {
+            map.mapType = GoogleMap.MAP_TYPE_NORMAL
             true
         }
         R.id.hybrid_map -> {
+            map.mapType = GoogleMap.MAP_TYPE_HYBRID
             true
         }
         R.id.satellite_map -> {
+            map.mapType = GoogleMap.MAP_TYPE_SATELLITE
             true
         }
         R.id.terrain_map -> {
+            map.mapType = GoogleMap.MAP_TYPE_TERRAIN
+            true
+        }
+        R.id.save_map_location -> {
+            checkForSetLocationAndNavigate()
             true
         }
         else -> super.onOptionsItemSelected(item)
@@ -109,19 +136,24 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
 
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(homeLatLng, zoomLevel))
 
-
         map.addMarker(MarkerOptions().position(homeLatLng))
+
+        map.setOnMarkerDragListener(this)
 
         setMapLongClick(map)
 
-        setPoiClick(map)
+        setMarkerDrag(map)
 
-        //setMapStyle(map)
+        setMapStyle(map)
 
         enableMyLocation()
     }
 
-    private fun setMapLongClick(map:GoogleMap) {
+    private fun setMarkerDrag(map: GoogleMap) {
+
+    }
+
+    private fun setMapLongClick(map: GoogleMap) {
         map.setOnMapLongClickListener { latLng ->
             // A Snippet is Additional text that's displayed below the title.
             val snippet = String.format(
@@ -130,31 +162,49 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
                 latLng.latitude,
                 latLng.longitude
             )
-            map.addMarker(
+            marker = map.addMarker(
                 MarkerOptions()
                     .position(latLng)
                     .title(getString(R.string.dropped_pin))
                     .snippet(snippet)
+                    .draggable(true)
+                    .alpha(0.6f)
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
             )
-        }
-    }
-    private fun setPoiClick(map: GoogleMap) {
-        map.setOnPoiClickListener { poi ->
-            val poiMarker = map.addMarker(
-                MarkerOptions()
-                    .position(poi.latLng)
-                    .title(poi.name)
-            )
-            poiMarker.showInfoWindow()
-        }
+            //markerStart = marker
 
+            Timber.i(latLng.toString())
+            locationSelected = true
+        }
     }
-    private fun isPermissionGranted() : Boolean {
+
+
+    private fun setMapStyle(map: GoogleMap) {
+        try {
+            // Customize the styling of the base map using a JSON object defined
+            // in a raw resource file.
+            val success = map.setMapStyle(
+                MapStyleOptions.loadRawResourceStyle(
+                    requireContext(),
+                    R.raw.map_style
+                )
+            )
+
+            if (!success) {
+                Timber.i("Style parsing failed.")
+            }
+        } catch (e: Resources.NotFoundException) {
+            Timber.i("Can't find style. Error: %s", e)
+        }
+    }
+
+    private fun isPermissionGranted(): Boolean {
         return ContextCompat.checkSelfPermission(
             requireContext(),
-            Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
     }
+
     private fun enableMyLocation() {
         if (isPermissionGranted()) {
             if (ActivityCompat.checkSelfPermission(
@@ -165,23 +215,39 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
                     Manifest.permission.ACCESS_COARSE_LOCATION
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
+
                 return
             }
             map.setMyLocationEnabled(true)
-        }
-        else {
+        } else {
             ActivityCompat.requestPermissions(
                 requireActivity(),
                 arrayOf<String>(Manifest.permission.ACCESS_FINE_LOCATION),
                 REQUEST_LOCATION_PERMISSION
             )
+        }
+    }
+
+    override fun onMarkerDragStart(p0: Marker?) {
+
+    }
+
+    override fun onMarkerDrag(p0: Marker?) {
+
+    }
+
+    override fun onMarkerDragEnd(p0: Marker) {
+
+        marker = p0
+        Timber.i(marker.position.toString())
+
+    }
+
+    private fun checkForSetLocationAndNavigate() {
+        if (locationSelected) {
+            onLocationSelected()
+        } else {
+            _viewModel.showSnackBar.value = getString(R.string.long_press_to_set)
         }
     }
 

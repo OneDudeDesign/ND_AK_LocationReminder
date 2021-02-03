@@ -35,7 +35,7 @@ class RemindersActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
 
-        //once the user is in the main screen prevent them gpoing back unless they logout
+        //once the user is in the main screen prevent them going back unless they logout
         val intent = Intent(this, RemindersActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         startActivity(intent)
