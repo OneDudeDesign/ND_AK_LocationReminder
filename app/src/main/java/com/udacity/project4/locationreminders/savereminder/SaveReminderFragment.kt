@@ -50,6 +50,7 @@ class SaveReminderFragment : BaseFragment() {
 
             //testing
             Timber.i(_viewModel.latitude.value.toString())
+            Timber.i(_viewModel.selectedPOI.toString())
 
 //            TODO: use the user entered reminder details to:
 //             1) add a geofencing request

@@ -1,3 +1,13 @@
+#Attributions
+- Blood
+-sweat
+- tears
+- more tears
+-hair from pulling
+
+Accessing exact location: https://stackoverflow.com/questions/44992014/how-to-get-current-location-in-googlemap-using-fusedlocationproviderclient
+
+
 # Location Reminder
 
 A Todo list app with location reminders that remind the user to do something when he reaches a specific location. The app will require the user to create an account and login to set and access reminders.
