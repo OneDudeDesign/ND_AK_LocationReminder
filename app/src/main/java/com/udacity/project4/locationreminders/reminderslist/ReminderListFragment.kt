@@ -35,7 +35,7 @@ class ReminderListFragment : BaseFragment() {
         setDisplayHomeAsUpEnabled(false)
         setTitle(getString(R.string.app_name))
 
-        binding.refreshLayout.setOnRefreshListener { _viewModel.loadReminders() }
+        binding.refreshLayout.setOnRefreshListener { swipeRefresh() }
 
         return binding.root
     }
@@ -97,6 +97,11 @@ class ReminderListFragment : BaseFragment() {
         super.onCreateOptionsMenu(menu, inflater)
 //        display logout as menu item
         inflater.inflate(R.menu.main_menu, menu)
+    }
+
+    private fun swipeRefresh(){
+        _viewModel.loadReminders()
+        binding.refreshLayout.isRefreshing = false
     }
 
 }
