@@ -7,6 +7,9 @@
 
 Accessing exact location: https://stackoverflow.com/questions/44992014/how-to-get-current-location-in-googlemap-using-fusedlocationproviderclient
 
+permissions adapted from previous projects wander and treasure hunt
+geofencing adaptation from treasurehunt
+
 
 # Location Reminder
 
