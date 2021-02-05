@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.*
 import androidx.databinding.DataBindingUtil
 import com.firebase.ui.auth.AuthUI
+import com.udacity.project4.MyApp
 import com.udacity.project4.R
 import com.udacity.project4.authentication.AuthenticationActivity
 import com.udacity.project4.base.BaseFragment

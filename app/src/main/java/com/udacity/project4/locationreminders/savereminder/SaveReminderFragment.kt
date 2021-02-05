@@ -56,7 +56,7 @@ class SaveReminderFragment : BaseFragment() {
             //add the data to the DB
             val newReminder : ReminderDataItem = (ReminderDataItem(title, description, location, latitude, longitude))
             _viewModel.validateAndSaveReminder(newReminder)
-            _viewModel.showToast.value = ("${getString(R.string.reminder_saved)}${location}!")
+
 
 //            TODO: use the user entered reminder details to:
 //             1) add a geofencing request

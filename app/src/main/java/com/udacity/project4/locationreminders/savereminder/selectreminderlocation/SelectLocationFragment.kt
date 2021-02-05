@@ -178,6 +178,9 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback{  //, GoogleMa
         locationRequest.fastestInterval = 120000
         locationRequest.priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
 
+        //once the map is ready check permissions again and ebnnable the location with fused location provider
+        //permissions check here might be overkill but it is conceivable the app was opened to the list
+        //gaining permissions then the permissions were revoked..
         enableMyLocation()
 
 //        val latitude = 48.02870
@@ -191,7 +194,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback{  //, GoogleMa
 //
 //        map.addMarker(MarkerOptions().position(homeLatLng))
 
-        //set this leter for nonPOI marker and draggability
+        //set this later for nonPOI marker and draggability
         //map.setOnMarkerDragListener(this)
 
         //setMapLongClick(map)
