@@ -40,7 +40,8 @@ import timber.log.Timber
 import java.util.*
 import kotlin.concurrent.fixedRateTimer
 
-class SelectLocationFragment : BaseFragment(), OnMapReadyCallback{  //, GoogleMap.OnMarkerDragListener add after onmap to implement on drag
+class SelectLocationFragment : BaseFragment(),
+    OnMapReadyCallback {  //, GoogleMap.OnMarkerDragListener add after onmap to implement on drag
 
     //Use Koin to get the view model of the SaveReminder
     override val _viewModel: SaveReminderViewModel by inject()
@@ -50,6 +51,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback{  //, GoogleMa
     private var lastLocation: Location? = null
     private var currentLocationMarker: Marker? = null
     private var fusedLocationProviderClient: FusedLocationProviderClient? = null
+
     //todo fix non poi selection and drag
     //values below for dropping a pin that is not a POI
     //private lateinit var marker: Marker
@@ -66,7 +68,10 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback{  //, GoogleMa
             if (locationList.isNotEmpty()) {
                 //The last location in the list is the newest
                 val location = locationList.last()
-                Log.i("MapsActivity", "Location: " + location.getLatitude() + " " + location.getLongitude())
+                Log.i(
+                    "MapsActivity",
+                    "Location: " + location.getLatitude() + " " + location.getLongitude()
+                )
                 lastLocation = location
                 if (currentLocationMarker != null) {
                     currentLocationMarker?.remove()
@@ -98,13 +103,14 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback{  //, GoogleMa
         setHasOptionsMenu(true)
         setDisplayHomeAsUpEnabled(true)
 
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+        fusedLocationProviderClient =
+            LocationServices.getFusedLocationProviderClient(requireActivity())
 
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
         binding.btnSaveMapLocation.setOnClickListener {
-                checkForSetLocationAndNavigate()
+            checkForSetLocationAndNavigate()
         }
 
 
@@ -133,7 +139,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback{  //, GoogleMa
 
         _viewModel.navigationCommand.postValue(
             NavigationCommand.Back
-            )
+        )
 
 
     }
@@ -279,14 +285,22 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback{  //, GoogleMa
                 ) == PackageManager.PERMISSION_GRANTED
             ) {
                 //Location Permission already granted
-                fusedLocationProviderClient?.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper())
+                fusedLocationProviderClient?.requestLocationUpdates(
+                    locationRequest,
+                    locationCallback,
+                    Looper.myLooper()
+                )
                 map.isMyLocationEnabled = true
             } else {
                 //Request Location Permission
                 checkLocationPermission()
             }
         } else {
-            fusedLocationProviderClient?.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper())
+            fusedLocationProviderClient?.requestLocationUpdates(
+                locationRequest,
+                locationCallback,
+                Looper.myLooper()
+            )
             map.isMyLocationEnabled = true
         }
     }
@@ -385,14 +399,12 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback{  //, GoogleMa
 
                 } else {
 
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                    _viewModel.showSnackBar.value = getString(R.string.permission_denied_explanation)
+                    _viewModel.showSnackBar.value =
+                        getString(R.string.fine_location_denied_explanation)
                 }
                 return
             }
-        }// other 'case' lines to check for other
-        // permissions this app might request
+        }
     }
 
 }

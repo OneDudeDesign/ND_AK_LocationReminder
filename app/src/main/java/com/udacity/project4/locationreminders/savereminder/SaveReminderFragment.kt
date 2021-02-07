@@ -1,6 +1,7 @@
 package com.udacity.project4.locationreminders.savereminder
 
 import android.Manifest
+import android.app.AlertDialog
 import android.app.PendingIntent
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -9,24 +10,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import com.google.android.gms.location.Geofence
+import com.google.android.gms.location.GeofencingClient
+import com.google.android.gms.location.GeofencingRequest
 import com.google.android.gms.location.LocationServices
 import com.udacity.project4.R
+import com.udacity.project4.authentication.AuthenticationActivity
 import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.databinding.FragmentSaveReminderBinding
-import com.udacity.project4.locationreminders.data.dto.ReminderDTO
+import com.udacity.project4.locationreminders.geofence.GeofenceBroadcastReceiver
 import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import org.koin.android.ext.android.inject
 import timber.log.Timber
-import com.google.android.gms.location.GeofencingClient
-import com.google.android.gms.location.GeofencingRequest
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationSettingsRequest
-import com.udacity.project4.locationreminders.geofence.GeofenceBroadcastReceiver
 
 class SaveReminderFragment : BaseFragment() {
     //Get the view model this time as a single to be shared with the another fragment
@@ -45,6 +43,7 @@ class SaveReminderFragment : BaseFragment() {
 
     companion object {
         const val GEOFENCE_RADIUS_IN_METERS = 100f
+
     }
 
 
@@ -87,7 +86,7 @@ class SaveReminderFragment : BaseFragment() {
             addNewReminderGeoFence(newReminder)
 
 
-//            TODO: use the user entered reminder details to:
+//            DONE: use the user entered reminder details to:
 //             1) add a geofencing request
 //             2)DONE save the reminder to the local db
         }
@@ -111,22 +110,15 @@ class SaveReminderFragment : BaseFragment() {
 
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
+                Manifest.permission.ACCESS_BACKGROUND_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return
+            checkPermissions()
         }
         geofencingClient = LocationServices.getGeofencingClient(requireContext())
         geofencingClient.addGeofences(geofencingRequest, geofencePendingIntent)?.run {
             addOnSuccessListener {
-                _viewModel.showToast.value = "Geofence added"
+               // _viewModel.showToast.value = "Geofence added"
                 addReminderToDb(reminder)
             }
             addOnFailureListener {
@@ -136,9 +128,83 @@ class SaveReminderFragment : BaseFragment() {
         }
     }
 
+    private fun checkPermissions() {
+        when {
+            ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_BACKGROUND_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED -> {
+                return
+
+            }
+
+            ActivityCompat.shouldShowRequestPermissionRationale(
+                requireActivity(),
+                Manifest.permission.ACCESS_BACKGROUND_LOCATION
+            ) -> {
+                val dialog = AlertDialog.Builder(requireContext())
+                dialog.setTitle("Allow Location Access \"All The Time\"")
+                dialog.setMessage("You must allow location access \"All the time\" in order to save the POI and enable reminders using Geo Fencing")
+                dialog.setPositiveButton(android.R.string.ok, null)
+                dialog.setOnDismissListener {
+                    ActivityCompat.requestPermissions(
+                        requireActivity(),
+                        arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION),
+                        AuthenticationActivity.BACKGROUND_LOCATION_PERMISSION_REQUEST_CODE
+                    )
+                }
+                dialog.show()
+
+            }
+            else -> {
+                // ask for permission.
+
+                ActivityCompat.requestPermissions(
+                    requireActivity(),
+                    arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION),
+                    AuthenticationActivity.BACKGROUND_LOCATION_PERMISSION_REQUEST_CODE
+                )
+            }
+        }
+    }
+
     private fun addReminderToDb(reminder: ReminderDataItem){
         _viewModel.validateAndSaveReminder(reminder)
 
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+
+        if (
+            grantResults.isEmpty() ||
+            grantResults[0] == PackageManager.PERMISSION_DENIED) {
+            // Permission denied.
+
+                Timber.i("permission was denied a dialog should show")
+
+            val dialog = AlertDialog.Builder(requireContext())
+            dialog.setTitle(R.string.location_required_error)
+            dialog.setMessage(R.string.fine_location_denied_explanation)
+            dialog.setPositiveButton(android.R.string.ok, null)
+            dialog.setOnDismissListener {
+                ActivityCompat.requestPermissions(
+                    requireActivity(),
+                    arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION),
+                    AuthenticationActivity.BACKGROUND_LOCATION_PERMISSION_REQUEST_CODE
+                )
+            }
+            dialog.show()
+
+
+
+        } else {
+            return
+
+        }
     }
 
 

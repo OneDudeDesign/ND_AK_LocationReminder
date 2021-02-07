@@ -3,9 +3,12 @@ package com.udacity.project4.authentication
 import android.Manifest
 import android.annotation.TargetApi
 import android.app.Activity
+import android.app.AlertDialog
+import android.app.Instrumentation
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
@@ -37,15 +40,12 @@ class AuthenticationActivity : AppCompatActivity() {
     companion object {
         const val TAG = "AuthenticationActivity"
         const val AUTHENTICATION_RESULT_CODE = 1001
-        const val REQUEST_FOREGROUND_AND_BACKGROUND_PERMISSION_RESULT_CODE = 33
-        const val REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE = 34
-        const val REQUEST_TURN_DEVICE_LOCATION_ON = 29
-        const val LOCATION_PERMISSION_INDEX = 0
-        const val BACKGROUND_LOCATION_PERMISSION_INDEX = 1
+        const val FINE_LOCATION_PERMISSION_REQUEST_CODE = 311
+        const val BACKGROUND_LOCATION_PERMISSION_REQUEST_CODE = 411
+
     }
 
-    private val runningQOrLater =
-        android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q
+    private val isOsQorLater = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -63,23 +63,61 @@ class AuthenticationActivity : AppCompatActivity() {
         btn_login_auth_act.background.alpha = 127
         btn_login_auth_act.setOnClickListener { checkForAuthenticatedUser() }
         btn_login_auth_act.isClickable = false
-
+        Timber.i("Button clickable is: %s", btn_login_auth_act.isClickable)
     }
 
     override fun onStart() {
         super.onStart()
-        checkPermissions()
+
+        checkFineLocationPermissions()
+
     }
 
-    private fun checkPermissions() {
-        if (foregroundAndBackgroundLocationPermissionApproved()) {
-            btn_login_auth_act.isClickable = true
-            //checkForAuthenticatedUser() this allows the login button
-            // to bypass if user is already authenticated but on log out it pops it to the firebase AuthUI screen
-        } else {
-            requestForegroundAndBackgroundLocationPermissions()
+
+
+    private fun checkFineLocationPermissions() {
+        when {
+            ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED -> {
+                if (!isOsQorLater) {
+                    btn_login_auth_act.isClickable = true
+                } else {
+                    return
+                }
+            }
+
+            ActivityCompat.shouldShowRequestPermissionRationale(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) -> {
+                val dialog = AlertDialog.Builder(this)
+                dialog.setTitle(R.string.location_required_error)
+                dialog.setMessage(R.string.fine_location_denied_explanation)
+                dialog.setPositiveButton(android.R.string.ok, null)
+                dialog.setOnDismissListener {
+                    ActivityCompat.requestPermissions(
+                        this,
+                        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                        FINE_LOCATION_PERMISSION_REQUEST_CODE
+                    )
+                }
+                dialog.show()
+
+            }
+            else -> {
+                // ask for permission.
+
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                    FINE_LOCATION_PERMISSION_REQUEST_CODE
+                )
+            }
         }
     }
+
 
     private fun checkForAuthenticatedUser() {
         val auth = FirebaseAuth.getInstance()
@@ -148,50 +186,6 @@ class AuthenticationActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    @TargetApi(29)
-    private fun foregroundAndBackgroundLocationPermissionApproved(): Boolean {
-        val foregroundLocationApproved = (
-                PackageManager.PERMISSION_GRANTED ==
-                        ActivityCompat.checkSelfPermission(
-                            this,
-                            Manifest.permission.ACCESS_FINE_LOCATION
-                        ))
-        val backgroundPermissionApproved =
-            if (runningQOrLater) {
-                PackageManager.PERMISSION_GRANTED ==
-                        ActivityCompat.checkSelfPermission(
-                            this, Manifest.permission.ACCESS_BACKGROUND_LOCATION
-                        )
-            } else {
-                true
-            }
-        return foregroundLocationApproved && backgroundPermissionApproved
-    }
-
-    @TargetApi(29)
-    private fun requestForegroundAndBackgroundLocationPermissions() {
-        if (foregroundAndBackgroundLocationPermissionApproved())
-            return
-
-        // Else request the permission
-        // this provides the result[LOCATION_PERMISSION_INDEX]
-        var permissionsArray = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
-
-        val resultCode = when {
-            runningQOrLater -> {
-                // this provides the result[BACKGROUND_LOCATION_PERMISSION_INDEX]
-                permissionsArray += Manifest.permission.ACCESS_BACKGROUND_LOCATION
-                REQUEST_FOREGROUND_AND_BACKGROUND_PERMISSION_RESULT_CODE
-            }
-            else -> REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE
-        }
-
-        ActivityCompat.requestPermissions(
-            this,
-            permissionsArray,
-            resultCode
-        )
-    }
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -202,30 +196,30 @@ class AuthenticationActivity : AppCompatActivity() {
 
         if (
             grantResults.isEmpty() ||
-            grantResults[LOCATION_PERMISSION_INDEX] == PackageManager.PERMISSION_DENIED ||
-            (requestCode == REQUEST_FOREGROUND_AND_BACKGROUND_PERMISSION_RESULT_CODE &&
-                    grantResults[BACKGROUND_LOCATION_PERMISSION_INDEX] ==
-                    PackageManager.PERMISSION_DENIED)
+            grantResults[0] == PackageManager.PERMISSION_DENIED
         ) {
             // Permission denied.
 
-             Snackbar.make(
-                        activity_authentication,
-                        R.string.permission_denied_always, Snackbar.LENGTH_INDEFINITE
-                    )
-                        .setAction(R.string.settings) {
-                            // Displays App settings screen.
-                            startActivity(Intent().apply {
-                                action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-                                data = Uri.fromParts("package", BuildConfig.APPLICATION_ID, null)
-                                flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                            })
-                        }.show()
+            val dialog = AlertDialog.Builder(this)
+            dialog.setTitle(R.string.location_required_error)
+            dialog.setMessage(R.string.fine_location_denied_explanation)
+            dialog.setPositiveButton(android.R.string.ok, null)
+            dialog.setOnDismissListener {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                    FINE_LOCATION_PERMISSION_REQUEST_CODE
+                )
+            }
+            dialog.show()
 
 
+        }
 
-        } else {
+         else {
+            Timber.i("Permissions: %s", permissions[0])
             btn_login_auth_act.isClickable = true
+
         }
     }
 
