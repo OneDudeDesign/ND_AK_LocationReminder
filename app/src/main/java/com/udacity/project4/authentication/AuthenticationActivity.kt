@@ -81,11 +81,7 @@ class AuthenticationActivity : AppCompatActivity() {
                 this,
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED -> {
-                if (!isOsQorLater) {
                     btn_login_auth_act.isClickable = true
-                } else {
-                    return
-                }
             }
 
             ActivityCompat.shouldShowRequestPermissionRationale(
