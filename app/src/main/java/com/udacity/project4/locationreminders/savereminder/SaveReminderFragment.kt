@@ -30,7 +30,7 @@ class SaveReminderFragment : BaseFragment() {
     //Get the view model this time as a single to be shared with the another fragment
     override val _viewModel: SaveReminderViewModel by inject()
     private lateinit var binding: FragmentSaveReminderBinding
-    private lateinit var geofencingClient :GeofencingClient
+    private lateinit var geofencingClient: GeofencingClient
 
     private val geofencePendingIntent: PendingIntent by lazy {
         val intent = Intent(context, GeofenceBroadcastReceiver::class.java)
@@ -38,14 +38,15 @@ class SaveReminderFragment : BaseFragment() {
             context,
             0,
             intent,
-            PendingIntent.FLAG_UPDATE_CURRENT)
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
     }
 
     companion object {
         const val GEOFENCE_RADIUS_IN_METERS = 100f
+        const val BACKGROUND_LOCATION_PERMISSION_REQUEST_CODE = 411
 
     }
-
 
 
     override fun onCreateView(
@@ -79,10 +80,18 @@ class SaveReminderFragment : BaseFragment() {
             val longitude = _viewModel.longitude.value
 
             //testing
-            Timber.i("Data I have: %s, %s, %s, %s, %s", title, description, location, latitude, longitude)
+            Timber.i(
+                "Data I have: %s, %s, %s, %s, %s",
+                title,
+                description,
+                location,
+                latitude,
+                longitude
+            )
 
             //add the data to the DB
-            val newReminder : ReminderDataItem = (ReminderDataItem(title, description, location, latitude, longitude))
+            val newReminder: ReminderDataItem =
+                (ReminderDataItem(title, description, location, latitude, longitude))
             addNewReminderGeoFence(newReminder)
 
 
@@ -91,12 +100,13 @@ class SaveReminderFragment : BaseFragment() {
 //             2)DONE save the reminder to the local db
         }
     }
+
     fun addNewReminderGeoFence(reminder: ReminderDataItem) {
         //build Geofence object
         val geofence = Geofence.Builder()
-        //set the id from the new reminder
+            //set the id from the new reminder
             .setRequestId(reminder.id)
-        //set the region
+            //set the region
             .setCircularRegion(reminder.latitude!!, reminder.longitude!!, GEOFENCE_RADIUS_IN_METERS)
             .setExpirationDuration(Geofence.NEVER_EXPIRE)
             .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
@@ -118,7 +128,7 @@ class SaveReminderFragment : BaseFragment() {
         geofencingClient = LocationServices.getGeofencingClient(requireContext())
         geofencingClient.addGeofences(geofencingRequest, geofencePendingIntent)?.run {
             addOnSuccessListener {
-               // _viewModel.showToast.value = "Geofence added"
+                // _viewModel.showToast.value = "Geofence added"
                 addReminderToDb(reminder)
             }
             addOnFailureListener {
@@ -150,7 +160,7 @@ class SaveReminderFragment : BaseFragment() {
                     ActivityCompat.requestPermissions(
                         requireActivity(),
                         arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION),
-                        AuthenticationActivity.BACKGROUND_LOCATION_PERMISSION_REQUEST_CODE
+                        BACKGROUND_LOCATION_PERMISSION_REQUEST_CODE
                     )
                 }
                 dialog.show()
@@ -162,13 +172,13 @@ class SaveReminderFragment : BaseFragment() {
                 ActivityCompat.requestPermissions(
                     requireActivity(),
                     arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION),
-                    AuthenticationActivity.BACKGROUND_LOCATION_PERMISSION_REQUEST_CODE
+                    BACKGROUND_LOCATION_PERMISSION_REQUEST_CODE
                 )
             }
         }
     }
 
-    private fun addReminderToDb(reminder: ReminderDataItem){
+    private fun addReminderToDb(reminder: ReminderDataItem) {
         _viewModel.validateAndSaveReminder(reminder)
 
     }
@@ -181,10 +191,11 @@ class SaveReminderFragment : BaseFragment() {
 
         if (
             grantResults.isEmpty() ||
-            grantResults[0] == PackageManager.PERMISSION_DENIED) {
+            grantResults[0] == PackageManager.PERMISSION_DENIED
+        ) {
             // Permission denied.
 
-                Timber.i("permission was denied a dialog should show")
+            Timber.i("permission was denied a dialog should show")
 
             val dialog = AlertDialog.Builder(requireContext())
             dialog.setTitle(R.string.location_required_error)
@@ -194,11 +205,10 @@ class SaveReminderFragment : BaseFragment() {
                 ActivityCompat.requestPermissions(
                     requireActivity(),
                     arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION),
-                    AuthenticationActivity.BACKGROUND_LOCATION_PERMISSION_REQUEST_CODE
+                    BACKGROUND_LOCATION_PERMISSION_REQUEST_CODE
                 )
             }
             dialog.show()
-
 
 
         } else {
