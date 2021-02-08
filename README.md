@@ -7,8 +7,11 @@
 
 Accessing exact location: https://stackoverflow.com/questions/44992014/how-to-get-current-location-in-googlemap-using-fusedlocationproviderclient
 
-permissions adapted from previous projects wander and treasure hunt
+permissions adapted from previous projects wander and treasure hunt along with developer.android.com and new Android 11 permissions video
 geofencing adaptation from treasurehunt
+
+You are here graphic:
+"https://www.vecteezy.com/free-vector/you-are-here"
 
 
 # Location Reminder

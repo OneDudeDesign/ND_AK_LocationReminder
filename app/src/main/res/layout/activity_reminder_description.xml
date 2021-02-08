@@ -10,24 +10,79 @@
             type="com.udacity.project4.locationreminders.reminderslist.ReminderDataItem" />
     </data>
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical"
-        tools:context=".locationreminders.ReminderDescriptionActivity">
-        <!--TODO: add the design of the reminder details-->
+        android:layout_height="match_parent">
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:gravity="center"
-            android:text="Reminder Details"
-            android:textSize="@dimen/text_size_large"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:orientation="vertical"
+            tools:context=".locationreminders.ReminderDescriptionActivity">
+            <!--TODO: add the design of the reminder details-->
 
-    </LinearLayout>
+            <ImageView
+                android:id="@+id/rd_imageView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding_large"
+                app:srcCompat="@drawable/youareheremdpi" />
+
+            <TextView
+
+                android:id="@+id/rd_tv_youarenear"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="You are near:"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_size_xlarge"
+                android:textStyle="bold" />
+
+            <TextView
+
+                android:id="@+id/rd_tv_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Location"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_size_xlarge"
+                android:textStyle="normal" />
+
+            <TextView
+
+                android:id="@+id/rd_tv_reminder_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Your reminder was:"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_size_xlarge"
+                android:textStyle="bold" />
+
+            <TextView
+
+                android:id="@+id/rd_tv_reminder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Reminder:Description"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_size_xlarge"
+                android:textStyle="normal" />
+
+            <Button
+                android:id="@+id/rd_btn_dismiss"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Dismiss"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_size_large"
+                android:textStyle="bold" />
+
+
+        </LinearLayout>
+    </ScrollView>
 </layout>
