@@ -20,7 +20,7 @@
             android:gravity="center"
             android:orientation="vertical"
             tools:context=".locationreminders.ReminderDescriptionActivity">
-            <!--TODO: add the design of the reminder details-->
+            <!--DONE: add the design of the reminder details-->
 
             <ImageView
                 android:id="@+id/rd_imageView"

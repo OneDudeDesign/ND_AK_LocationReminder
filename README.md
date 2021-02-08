@@ -13,6 +13,8 @@ geofencing adaptation from treasurehunt
 You are here graphic:
 "https://www.vecteezy.com/free-vector/you-are-here"
 
+onBackPressedCallback in ReminderDescription activity adapted from Medium article: https://medium.com/@pavan.careers5208/onbackpresseddispatcher-android-2a771f25bd44
+
 
 # Location Reminder
 

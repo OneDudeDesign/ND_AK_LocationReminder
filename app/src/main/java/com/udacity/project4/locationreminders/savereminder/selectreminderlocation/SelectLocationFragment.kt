@@ -1,5 +1,4 @@
 package com.udacity.project4.locationreminders.savereminder.selectreminderlocation
-//TODO: CHRIS: clean up this file it works but its a messssssss
 
 import android.Manifest
 import android.app.Activity
@@ -53,8 +52,7 @@ class SelectLocationFragment : BaseFragment(),
     private var currentLocationMarker: Marker? = null
     private var fusedLocationProviderClient: FusedLocationProviderClient? = null
 
-    //todo fix non poi selection and drag
-    //values below for dropping a pin that is not a POI
+    //values below for dropping a pin that is not a POI FUTURE IMPLEMENTATION
     //private lateinit var marker: Marker
     //private lateinit var markerStart: Marker
     //private lateinit var markerEnd: Marker
@@ -69,10 +67,7 @@ class SelectLocationFragment : BaseFragment(),
             if (locationList.isNotEmpty()) {
                 //The last location in the list is the newest
                 val location = locationList.last()
-                Log.i(
-                    "MapsActivity",
-                    "Location: " + location.getLatitude() + " " + location.getLongitude()
-                )
+
                 lastLocation = location
                 if (currentLocationMarker != null) {
                     currentLocationMarker?.remove()
@@ -87,7 +82,7 @@ class SelectLocationFragment : BaseFragment(),
                 currentLocationMarker = map.addMarker(markerOptions)
 
                 //move map camera
-                map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 11.0F))
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0F))
             }
         }
     }
