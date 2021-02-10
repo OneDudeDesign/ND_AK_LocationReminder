@@ -7,6 +7,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
+import timber.log.Timber
 
 abstract class BaseRecyclerViewAdapter<T>(private val callback: ((item: T) -> Unit)? = null) :
     RecyclerView.Adapter<DataBindingViewHolder<T>>() {
@@ -37,6 +38,8 @@ abstract class BaseRecyclerViewAdapter<T>(private val callback: ((item: T) -> Un
         holder.bind(item)
         holder.itemView.setOnClickListener {
             callback?.invoke(item)
+
+            //TODO figure out list click for ReminderList Fragment???
         }
     }
 

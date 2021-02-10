@@ -1,5 +1,6 @@
 package com.udacity.project4.locationreminders.reminderslist
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
@@ -11,10 +12,13 @@ import com.udacity.project4.authentication.AuthenticationActivity
 import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.databinding.FragmentRemindersBinding
+import com.udacity.project4.databinding.ItReminderBinding
+import com.udacity.project4.locationreminders.ReminderDescriptionActivity
 import com.udacity.project4.locationreminders.RemindersActivity
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import com.udacity.project4.utils.setTitle
 import com.udacity.project4.utils.setup
+import kotlinx.android.synthetic.main.it_reminder.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ReminderListFragment : BaseFragment() {
@@ -31,6 +35,8 @@ class ReminderListFragment : BaseFragment() {
                 R.layout.fragment_reminders, container, false
             )
         binding.viewModel = _viewModel
+
+
 
         setHasOptionsMenu(true)
         setDisplayHomeAsUpEnabled(false)
@@ -66,12 +72,22 @@ class ReminderListFragment : BaseFragment() {
     }
 
     private fun setupRecyclerView() {
-        val adapter = RemindersListAdapter {
+//TODO go to different screen with an option to DELETE (remove from list and remove Geofence)
+        val adapter = RemindersListAdapter {reminder ->
+
+            startActivity(
+                ReminderDescriptionActivity.newIntent(context!!, reminder).apply {
+                    putExtra( EXTRA_ReminderDataItem, reminder)
+                }
+            )
         }
+
 
 //        setup the recycler view using the extension function
         binding.reminderssRecyclerView.setup(adapter)
+
     }
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
@@ -104,5 +120,8 @@ class ReminderListFragment : BaseFragment() {
         _viewModel.loadReminders()
         binding.refreshLayout.isRefreshing = false
     }
+
+    companion object {
+        private const val EXTRA_ReminderDataItem = "EXTRA_ReminderDataItem"}
 
 }
