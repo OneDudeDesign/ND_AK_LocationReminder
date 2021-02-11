@@ -31,8 +31,9 @@
     <string name="select_location">Please select location</string>
     <string name="geofences_not_added">Problem in adding geofences.</string>
     <string name="welcome">Welcome</string>
-    <string name="err_enter_title">Please enter title</string>
-    <string name="err_select_location">Please select location</string>
+    <string name="err_enter_title">Please enter a title</string>
+    <string name="err_enter_description">Please enter a description</string>
+    <string name="err_select_location">Please select a location</string>
     <string name="long_press_to_set">Please long press to drop a pin where you want to set a reminder.</string>
 
     <!-- Error strings -->

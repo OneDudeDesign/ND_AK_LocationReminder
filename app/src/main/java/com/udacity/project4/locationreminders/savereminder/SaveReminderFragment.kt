@@ -92,7 +92,10 @@ class SaveReminderFragment : BaseFragment() {
             //add the data to the DB
             val newReminder: ReminderDataItem =
                 (ReminderDataItem(title, description, location, latitude, longitude))
-            addNewReminderGeoFence(newReminder)
+
+
+            validateDataForSaveAndGeoFence(newReminder)
+
 
 
 //            DONE: use the user entered reminder details to:
@@ -215,6 +218,38 @@ class SaveReminderFragment : BaseFragment() {
             return
 
         }
+    }
+
+    private fun validateDataForSaveAndGeoFence(reminder: ReminderDataItem) {
+        Timber.i("Reminder %s", reminder)
+
+        when (null) {
+            reminder.latitude -> {
+                //snackout select location
+                _viewModel.showSnackBar.value = getString(R.string.err_select_location)
+                Timber.i("Coordinates are Empty")
+                return
+            }
+            reminder.title -> {
+                Timber.i("Title is Empty")
+                //snack out title
+                _viewModel.showSnackBar.value = getString(R.string.err_enter_title)
+                return
+            }
+
+            reminder.description -> {
+                Timber.i("Description is Empty")
+                //snack out description
+                _viewModel.showSnackBar.value = getString(R.string.err_enter_description)
+                return
+            }
+            else -> {
+                //ok to set geofence and save
+                addNewReminderGeoFence(reminder)
+            }
+        }
+
+
     }
 
 

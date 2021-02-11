@@ -1,20 +1,15 @@
 package com.udacity.project4.locationreminders.reminderslist
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import androidx.databinding.DataBindingUtil
 import com.firebase.ui.auth.AuthUI
-import com.udacity.project4.MyApp
 import com.udacity.project4.R
 import com.udacity.project4.authentication.AuthenticationActivity
 import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.databinding.FragmentRemindersBinding
-import com.udacity.project4.databinding.ItReminderBinding
-import com.udacity.project4.locationreminders.ReminderDescriptionActivity
-import com.udacity.project4.locationreminders.RemindersActivity
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import com.udacity.project4.utils.setTitle
 import com.udacity.project4.utils.setup
@@ -73,13 +68,20 @@ class ReminderListFragment : BaseFragment() {
 
     private fun setupRecyclerView() {
 //TODO go to different screen with an option to DELETE (remove from list and remove Geofence)
-        val adapter = RemindersListAdapter {reminder ->
-
-            startActivity(
-                ReminderDescriptionActivity.newIntent(context!!, reminder).apply {
-                    putExtra( EXTRA_ReminderDataItem, reminder)
-                }
+        val adapter = RemindersListAdapter {
+            //use the navigationCommand live data to navigate between the fragments
+            _viewModel.navigationCommand.postValue(
+                NavigationCommand.To(ReminderListFragmentDirections.actionReminderListFragmentToReminderDetailFragment(it)
+                )
             )
+
+        //reminder ->
+
+//            startActivity(
+//                ReminderDescriptionActivity.newIntent(context!!, reminder).apply {
+//                    putExtra( EXTRA_ReminderDataItem, reminder)
+//                }
+//            )
         }
 
 

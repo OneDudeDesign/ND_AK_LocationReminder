@@ -37,6 +37,10 @@
     <fragment
         android:id="@+id/reminderDetailFragment"
         android:name="com.udacity.project4.locationreminders.reminderdetails.ReminderDetailFragment"
-        android:label="ReminderDetailFragment" />
+        android:label="ReminderDetailFragment" >
+        <argument
+            android:name="reminder"
+            app:argType="com.udacity.project4.locationreminders.reminderslist.ReminderDataItem" />
+    </fragment>
 
 </navigation>
