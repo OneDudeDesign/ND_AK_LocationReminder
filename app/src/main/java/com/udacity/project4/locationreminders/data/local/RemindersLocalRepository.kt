@@ -4,6 +4,7 @@ import com.udacity.project4.locationreminders.data.ReminderDataSource
 import com.udacity.project4.locationreminders.data.dto.ReminderDTO
 import com.udacity.project4.locationreminders.data.dto.Result
 import kotlinx.coroutines.*
+import timber.log.Timber
 
 /**
  * Concrete implementation of a data source as a db.
@@ -63,6 +64,20 @@ class RemindersLocalRepository(
     override suspend fun deleteAllReminders() {
         withContext(ioDispatcher) {
             remindersDao.deleteAllReminders()
+        }
+    }
+    /**
+     * Deletes a reminder in the db
+     */
+    override suspend fun deleteReminder(id: String) {
+        try {
+            withContext(ioDispatcher){
+                remindersDao.deleteReminder(id)
+            }
+
+        } catch (e:Exception) {
+            Timber.i("Exception: %s", e)
+
         }
     }
 }
