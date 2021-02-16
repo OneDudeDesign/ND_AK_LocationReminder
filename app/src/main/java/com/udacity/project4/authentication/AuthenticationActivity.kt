@@ -41,11 +41,8 @@ class AuthenticationActivity : AppCompatActivity() {
         const val TAG = "AuthenticationActivity"
         const val AUTHENTICATION_RESULT_CODE = 1001
         const val FINE_LOCATION_PERMISSION_REQUEST_CODE = 311
-        const val BACKGROUND_LOCATION_PERMISSION_REQUEST_CODE = 411
 
     }
-
-    private val isOsQorLater = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -132,11 +129,6 @@ class AuthenticationActivity : AppCompatActivity() {
             AuthUI.IdpConfig.EmailBuilder().build(), AuthUI.IdpConfig.GoogleBuilder().build()
         )
 
-//        val customLayout = AuthMethodPickerLayout.Builder(R.layout.activity_authentication)
-//            .setEmailButtonId(R.id.auth_email_btn)
-//            .setGoogleButtonId(R.layout.fui_idp_button_google)
-//            .build()
-
         startActivityForResult(
             AuthUI.getInstance().createSignInIntentBuilder()
                 .setAvailableProviders(providers)
@@ -188,7 +180,7 @@ class AuthenticationActivity : AppCompatActivity() {
         permissions: Array<String>,
         grantResults: IntArray
     ) {
-        Log.d(TAG, "onRequestPermissionResult")
+       Timber.i("$TAG, onRequestPermissionResult")
 
         if (
             grantResults.isEmpty() ||

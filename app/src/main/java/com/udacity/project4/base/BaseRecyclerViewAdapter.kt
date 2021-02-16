@@ -38,8 +38,6 @@ abstract class BaseRecyclerViewAdapter<T>(private val callback: ((item: T) -> Un
         holder.bind(item)
         holder.itemView.setOnClickListener {
             callback?.invoke(item)
-
-            //TODO figure out list click for ReminderList Fragment???
         }
     }
 

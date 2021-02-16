@@ -46,5 +46,14 @@
     <string name="save_location_from_selection">Save Location</string>
     <string name="login_required">Login is required to use this application, please try again</string>
     <string name="permission_denied_always">Location permission must be allow always for geofencing reminders!</string>
+    <string name="reminder_detail_title">Reminder Details</string>
+    <string name="reminder_detail_heading">You set a reminder for:</string>
+
+    <!-- reminder detailsfragment -->
+    <string name="rdf_location_head">Location:</string>
+    <string name="rdf_description">Description:</string>
+    <string name="rdf_title_head">Reminder:</string>
+    <string name="rdf_btn_save_text">Save</string>
+    <string name="rdf_btn_remove_text">Remove</string>
 
 </resources>

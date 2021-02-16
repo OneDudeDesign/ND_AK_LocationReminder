@@ -19,22 +19,127 @@
             android:id="@+id/testTV"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Test"
-            android:textSize="@dimen/text_size_xlarge"
+            android:padding="@dimen/padding_normal"
+            android:text="@string/reminder_detail_heading"
+            android:textAlignment="center"
             android:textColor="@color/black"
-            app:layout_constraintStart_toStartOf="parent"
+            android:textSize="@dimen/text_size_xlarge"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Test"/>
+            tools:text="@string/reminder_detail_heading" />
 
-        <Button
-            android:id="@+id/btn_delete_geofence"
+        <TextView
+            android:id="@+id/rdf_location_head"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Button"
+            android:padding="@dimen/padding_small"
+            android:text="@string/rdf_location_head"
+            android:textSize="@dimen/text_size_medium"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/testTV"
+            tools:text="@string/rdf_location_head" />
+
+        <TextView
+            android:id="@+id/rdf_location"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding_small"
+            android:textColor="@color/colorAccent"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/rdf_location_head"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/rdf_location_head"
+            app:layout_constraintTop_toTopOf="@+id/rdf_location_head"
+            tools:text="TextView" />
+
+        <TextView
+            android:id="@+id/rdf_title_head"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding_small"
+            android:text="@string/rdf_title_head"
+            android:textSize="@dimen/text_size_medium"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rdf_location"
+            tools:text="@string/rdf_title_head" />
+
+        <TextView
+            android:id="@+id/rdf_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding_small"
+            android:textColor="@color/black"
+            android:textStyle="normal"
+            app:layout_constraintBottom_toBottomOf="@+id/rdf_title_head"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/rdf_title_head"
+            app:layout_constraintTop_toBottomOf="@+id/rdf_location"
+            tools:text="TextView" />
+
+        <TextView
+            android:id="@+id/rdf_description_head"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding_small"
+            android:text="@string/rdf_description"
+            android:textSize="@dimen/text_size_medium"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rdf_title"
+            tools:text="@string/rdf_description" />
+
+        <TextView
+            android:id="@+id/rdf_description"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding_small"
+            android:textColor="@color/black"
+            android:textStyle="normal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/rdf_description_head"
+            app:layout_constraintTop_toBottomOf="@+id/rdf_title_head"
+            tools:text="TextView" />
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/rdf_map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@id/rdf_ll_buttons"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/testTV" />
+            app:layout_constraintTop_toBottomOf="@id/rdf_description"
+            tools:layout="@layout/fragment_select_location" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/rdf_ll_buttons"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+        <Button
+            android:id="@+id/btn_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:text="@string/rdf_btn_save_text"
+            android:layout_weight="1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/btn_remove"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/rdf_btn_remove_text"
+            android:layout_weight="1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/btn_back" />
+        </LinearLayout>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
