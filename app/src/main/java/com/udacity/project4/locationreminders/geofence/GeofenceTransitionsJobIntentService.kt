@@ -50,7 +50,7 @@ class GeofenceTransitionsJobIntentService : JobIntentService(), CoroutineScope {
         }
     }
         //DONE: handle the geofencing transition events and
-        // send a notification to the user when he enters the geofence area
+        // send a notification to the user when they enter the geofence area
         //Done call @sendNotification
 
 

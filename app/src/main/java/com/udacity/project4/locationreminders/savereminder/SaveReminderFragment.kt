@@ -52,7 +52,7 @@ class SaveReminderFragment : BaseFragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_save_reminder, container, false)
 
@@ -89,13 +89,12 @@ class SaveReminderFragment : BaseFragment() {
                 longitude
             )
 
-            //add the data to the DB
+            //start the process of adding the reminder to the GeoFence list and the DB
             val newReminder: ReminderDataItem =
                 (ReminderDataItem(title, description, location, latitude, longitude))
 
 
             validateDataForSaveAndGeoFence(newReminder)
-
 
 
 //            DONE: use the user entered reminder details to:
@@ -131,7 +130,6 @@ class SaveReminderFragment : BaseFragment() {
         geofencingClient = LocationServices.getGeofencingClient(requireContext())
         geofencingClient.addGeofences(geofencingRequest, geofencePendingIntent)?.run {
             addOnSuccessListener {
-                // _viewModel.showToast.value = "Geofence added"
                 addReminderToDb(reminder)
             }
             addOnFailureListener {
@@ -170,7 +168,6 @@ class SaveReminderFragment : BaseFragment() {
 
             }
             else -> {
-                // ask for permission.
 
                 ActivityCompat.requestPermissions(
                     requireActivity(),
@@ -197,8 +194,6 @@ class SaveReminderFragment : BaseFragment() {
             grantResults[0] == PackageManager.PERMISSION_DENIED
         ) {
             // Permission denied.
-
-            Timber.i("permission was denied a dialog should show")
 
             val dialog = AlertDialog.Builder(requireContext())
             dialog.setTitle(R.string.location_required_error)

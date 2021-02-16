@@ -35,6 +35,7 @@
     <string name="err_enter_description">Please enter a description</string>
     <string name="err_select_location">Please select a location</string>
     <string name="long_press_to_set">Please long press to drop a pin where you want to set a reminder.</string>
+    <string name="reminder_removed">Reminder removed for: </string>
 
     <!-- Error strings -->
     <string name="geofence_unknown_error">Unknown error: the Geofence service is not available now.</string>

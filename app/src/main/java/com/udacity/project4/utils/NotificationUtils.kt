@@ -6,10 +6,11 @@ import android.app.PendingIntent
 import android.content.Context
 import android.os.Build
 import androidx.core.app.NotificationCompat
-import androidx.core.app.TaskStackBuilder
+import androidx.core.os.bundleOf
+import androidx.navigation.NavDeepLinkBuilder
 import com.udacity.project4.BuildConfig
 import com.udacity.project4.R
-import com.udacity.project4.locationreminders.ReminderDescriptionActivity
+import com.udacity.project4.locationreminders.RemindersActivity
 import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
 
 private const val NOTIFICATION_CHANNEL_ID = BuildConfig.APPLICATION_ID + ".channel"
@@ -30,14 +31,28 @@ fun sendNotification(context: Context, reminderDataItem: ReminderDataItem) {
         )
         notificationManager.createNotificationChannel(channel)
     }
+    //changed this up to navigate to a fragment instead of the activity
+    //decided to use the fragment/viewmodel construct to use the same screen if a user clicks
+    //on the list or gets sent their from the notification, less code and baseviewmodel options available
 
-    val intent = ReminderDescriptionActivity.newIntent(context.applicationContext, reminderDataItem)
+    //used NavDeepLinkBuilder after reviewing on Developer.android.com
+
+    //val intent = ReminderDescriptionActivity.newIntent(context.applicationContext, reminderDataItem)
+    val bundle = bundleOf("EXTRA_ReminderDataItem" to reminderDataItem)
+    val navigationIntent = NavDeepLinkBuilder(context.applicationContext)
+        .setComponentName(RemindersActivity::class.java)
+        .setGraph(R.navigation.nav_graph)
+        .setDestination(R.id.reminderDetailFragment)
+        .setArguments(bundle)
+        .createTaskStackBuilder()
+        //.createPendingIntent()
+
 
     //create a pending intent that opens ReminderDescriptionActivity when the user clicks on the notification
-    val stackBuilder = TaskStackBuilder.create(context)
-        .addParentStack(ReminderDescriptionActivity::class.java)
-        .addNextIntent(intent)
-    val notificationPendingIntent = stackBuilder
+//    val stackBuilder = TaskStackBuilder.create(context)
+//        .addParentStack(ReminderDescriptionActivity::class.java)
+//        .addNextIntent(intent)
+    val notificationPendingIntent = navigationIntent
         .getPendingIntent(getUniqueId(), PendingIntent.FLAG_UPDATE_CURRENT)
 
 //    build the notification object with the data to be shown

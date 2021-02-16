@@ -38,10 +38,11 @@ class ReminderDetailViewModel(val app: Application, val dataSource: ReminderData
         viewModelScope.launch {
             dataSource.deleteReminder(reminderData.id)
             showLoading.value = false
-            showSnackBar.value = "reminder deleted" + " " + reminderData.location
+            showSnackBar.value = app.getString(R.string.reminder_removed) + " " + reminderData.location
             navigationCommand.value = NavigationCommand.Back
         }
     }
+
 
 }
 

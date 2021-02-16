@@ -60,14 +60,11 @@ class AuthenticationActivity : AppCompatActivity() {
         btn_login_auth_act.background.alpha = 127
         btn_login_auth_act.setOnClickListener { checkForAuthenticatedUser() }
         btn_login_auth_act.isClickable = false
-        Timber.i("Button clickable is: %s", btn_login_auth_act.isClickable)
     }
 
     override fun onStart() {
         super.onStart()
-
         checkFineLocationPermissions()
-
     }
 
 
@@ -100,8 +97,6 @@ class AuthenticationActivity : AppCompatActivity() {
 
             }
             else -> {
-                // ask for permission.
-
                 ActivityCompat.requestPermissions(
                     this,
                     arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
@@ -164,7 +159,7 @@ class AuthenticationActivity : AppCompatActivity() {
     }
 
     private fun showToast(string: String) {
-        Toast.makeText(this, "$string", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, string, Toast.LENGTH_SHORT).show()
 
     }
 

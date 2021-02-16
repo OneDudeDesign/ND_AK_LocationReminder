@@ -89,7 +89,7 @@ class SelectLocationFragment : BaseFragment(),
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_select_location, container, false)
 
@@ -262,7 +262,7 @@ class SelectLocationFragment : BaseFragment(),
                 Timber.i("Style parsing failed.")
             }
         } catch (e: Resources.NotFoundException) {
-            Timber.i("Can't find style. Error: %s", e)
+            Timber.i("Can't find style. Error: $e")
         }
     }
 
@@ -324,7 +324,6 @@ class SelectLocationFragment : BaseFragment(),
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(
                     requireActivity(),
                     Manifest.permission.ACCESS_FINE_LOCATION
@@ -345,7 +344,6 @@ class SelectLocationFragment : BaseFragment(),
 
 
             } else {
-                // No explanation needed, we can request the permission.
                 ActivityCompat.requestPermissions(
                     requireActivity(),
                     arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
@@ -361,11 +359,9 @@ class SelectLocationFragment : BaseFragment(),
     ) {
         when (requestCode) {
             REQUEST_LOCATION_PERMISSION -> {
-                // If request is cancelled, the result arrays are empty.
+
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                    // permission was granted, yay! Do the
-                    // location-related task you need to do.
                     if (ContextCompat.checkSelfPermission(
                             requireContext(),
                             Manifest.permission.ACCESS_FINE_LOCATION

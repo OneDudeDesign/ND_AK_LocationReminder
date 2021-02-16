@@ -1,7 +1,6 @@
 package com.udacity.project4.locationreminders.reminderdetails
 
-import android.app.PendingIntent
-import android.content.Intent
+
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,11 +14,11 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.udacity.project4.R
 import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.databinding.FragmentDetailReminderBinding
-import com.udacity.project4.locationreminders.geofence.GeofenceBroadcastReceiver
 import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import com.udacity.project4.utils.setTitle
@@ -33,15 +32,7 @@ class ReminderDetailFragment : BaseFragment(), OnMapReadyCallback {
     private lateinit var binding: FragmentDetailReminderBinding
     private lateinit var geofencingClient: GeofencingClient
     private lateinit var map: GoogleMap
-    private val geofencePendingIntent: PendingIntent by lazy {
-        val intent = Intent(context, GeofenceBroadcastReceiver::class.java)
-        PendingIntent.getBroadcast(
-            context,
-            0,
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT
-        )
-    }
+
     private lateinit var reminder: ReminderDataItem
 
     val args: ReminderDetailFragmentArgs by navArgs()
@@ -49,7 +40,7 @@ class ReminderDetailFragment : BaseFragment(), OnMapReadyCallback {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_detail_reminder, container, false)
 
@@ -57,6 +48,14 @@ class ReminderDetailFragment : BaseFragment(), OnMapReadyCallback {
         setTitle(getString(R.string.reminder_detail_title))
         val mapFragment = childFragmentManager.findFragmentById(R.id.rdf_map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+
+        //checking for arguments which will be 'arguments' in the intent bundle or 'args' if from the navigation safeargs
+        if(arguments?.get(EXTRA_ReminderDataItem) != null) {
+            reminder = arguments!![EXTRA_ReminderDataItem] as ReminderDataItem
+        } else {
+            reminder = args.reminder
+            Timber.i("Reminder %s", reminder)
+        }
 
         binding.viewModel = _viewModel
 
@@ -67,8 +66,6 @@ class ReminderDetailFragment : BaseFragment(), OnMapReadyCallback {
         super.onViewCreated(view, savedInstanceState)
         binding.lifecycleOwner = this
 
-        reminder = args.reminder
-        Timber.i("Reminder %s", reminder)
         setDisplayHomeAsUpEnabled(true)
 
         btn_remove.setOnClickListener { geofenceRemove() }
@@ -82,26 +79,39 @@ class ReminderDetailFragment : BaseFragment(), OnMapReadyCallback {
     private fun geofenceRemove() {
         geofencingClient = LocationServices.getGeofencingClient(requireContext())
 
-
         geofencingClient.removeGeofences(listOf(reminder.id)).run {
             addOnSuccessListener {
-                Timber.i("Geofence removed %s", reminder.id
+                Timber.i(
+                    "Geofence removed %s", reminder.id
                 )
                 _viewModel.deleteReminder(reminder)
             }
             addOnFailureListener {
-                Timber.i("Geofence not removed %s" , it)
+                Timber.i("$it: Geofence not removed")
             }
         }
-        Timber.i ("try and remove the geofence ")
-
     }
 
     override fun onMapReady(p0: GoogleMap?) {
         map = p0 ?: return
         val reminderLatLng = LatLng(reminder.latitude!!, reminder.longitude!!)
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(reminderLatLng,18f))
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(reminderLatLng, 18f))
         map.mapType = GoogleMap.MAP_TYPE_HYBRID
+        map.addMarker(
+            MarkerOptions()
+                .position(reminderLatLng)
+                .title(reminder.location)
+        )
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        //make sure to clear the view model after destroy, as it's a single view model.
+        _viewModel.onClear()
+    }
+
+    companion object {
+        private const val EXTRA_ReminderDataItem = "EXTRA_ReminderDataItem"
     }
 
 }

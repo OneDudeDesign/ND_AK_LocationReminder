@@ -70,14 +70,8 @@ class RemindersLocalRepository(
      * Deletes a reminder in the db
      */
     override suspend fun deleteReminder(id: String) {
-        try {
             withContext(ioDispatcher){
                 remindersDao.deleteReminder(id)
             }
-
-        } catch (e:Exception) {
-            Timber.i("Exception: %s", e)
-
-        }
     }
 }
