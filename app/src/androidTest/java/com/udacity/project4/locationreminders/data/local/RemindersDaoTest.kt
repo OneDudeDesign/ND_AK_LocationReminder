@@ -5,6 +5,7 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
+import com.udacity.project4.MainCoroutineRule
 import com.udacity.project4.locationreminders.data.dto.ReminderDTO
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
@@ -27,6 +28,9 @@ class RemindersDaoTest {
     @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
+    @get:Rule
+    var mainCoroutineRule = MainCoroutineRule()
+
     @Before
     fun initializeDatabase(){
         database = Room.inMemoryDatabaseBuilder(
@@ -39,7 +43,7 @@ class RemindersDaoTest {
     fun closeDatabase() = database.close()
 
     @Test
-    fun insertReminderandGetById() = runBlockingTest {
+    fun insertReminderandGetById() = mainCoroutineRule.runBlockingTest {
         //Given: Insert a reminder
         val reminder = ReminderDTO("reminder title","reminder description",
             "Somewhere", 100.10, 55.50)
@@ -59,7 +63,7 @@ class RemindersDaoTest {
     }
 
     @Test
-    fun insertRemindersandDeleteAll() = runBlockingTest {
+    fun insertRemindersandDeleteAll() = mainCoroutineRule.runBlockingTest {
         //Given: Insert reminders
         val reminder = ReminderDTO("reminder title","reminder description",
             "Somewhere", 100.10, 55.50)
@@ -76,7 +80,7 @@ class RemindersDaoTest {
         assertThat(reminderList.isEmpty(), `is`(true))
     }
     @Test
-    fun insertRemindersandDeleteOne() = runBlockingTest {
+    fun insertRemindersandDeleteOne() = mainCoroutineRule.runBlockingTest {
         //Given: Insert reminders
         val reminder = ReminderDTO("reminder title","reminder description",
             "Somewhere", 100.10, 55.50)
@@ -92,7 +96,7 @@ class RemindersDaoTest {
         database.reminderDao().deleteReminder(reminder3.id)
         val reminderList = database.reminderDao().getReminders()
 
-        //THEN: Assert that the returned list is empty
+        //THEN: Assert that the deleted reminder is gone
 
         for (element in reminderList) {
             assertThat(element.id,`is`(not(equalTo(reminder3.id))))
@@ -100,7 +104,7 @@ class RemindersDaoTest {
     }
 
     @Test
-    fun insertRemindersandOverwrite() = runBlockingTest {
+    fun insertRemindersandOverwrite() = mainCoroutineRule.runBlockingTest {
         //Given: Insert reminders
         val reminder = ReminderDTO("reminder title","reminder description",
             "Somewhere", 100.10, 55.50)
