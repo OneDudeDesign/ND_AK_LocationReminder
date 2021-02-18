@@ -68,8 +68,8 @@ class ReminderDetailFragment : BaseFragment(), OnMapReadyCallback {
 
         setDisplayHomeAsUpEnabled(true)
 
-        btn_remove.setOnClickListener { geofenceRemove() }
-        btn_back.setOnClickListener { _viewModel.navigationCommand.value = NavigationCommand.Back }
+        rdf_btn_remove.setOnClickListener { geofenceRemove() }
+        rdf_btn_back.setOnClickListener { _viewModel.navigationCommand.value = NavigationCommand.Back }
         rdf_location.text = reminder.location
         rdf_title.text = reminder.title
         rdf_description.text = reminder.description

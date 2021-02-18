@@ -121,7 +121,7 @@
             app:layout_constraintBottom_toBottomOf="parent">
 
         <Button
-            android:id="@+id/btn_back"
+            android:id="@+id/rdf_btn_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
@@ -131,14 +131,14 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <Button
-            android:id="@+id/btn_remove"
+            android:id="@+id/rdf_btn_remove"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/rdf_btn_remove_text"
             android:layout_weight="1"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/btn_back" />
+            app:layout_constraintStart_toEndOf="@+id/rdf_btn_back" />
         </LinearLayout>
 
 

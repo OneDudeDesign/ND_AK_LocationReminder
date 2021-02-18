@@ -34,6 +34,7 @@ import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.databinding.FragmentSelectLocationBinding
 import com.udacity.project4.locationreminders.reminderslist.ReminderListFragmentDirections
 import com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel
+import com.udacity.project4.utils.EspressoIdlingResource.wrapEspressoIdlingResource
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import org.koin.android.ext.android.inject
 import timber.log.Timber
@@ -108,6 +109,9 @@ class SelectLocationFragment : BaseFragment(),
         binding.btnSaveMapLocation.setOnClickListener {
             checkForSetLocationAndNavigate()
         }
+
+        //set the locationSelected LD to false
+        _viewModel.locationSelectedVM.value = false
 
 
 //        DONE: add the map setup implementation
@@ -241,7 +245,10 @@ class SelectLocationFragment : BaseFragment(),
             _viewModel.latitude.value = poiMarker.position.latitude
             _viewModel.longitude.value = poiMarker.position.longitude
             _viewModel.reminderSelectedLocationStr.value = poiMarker.title
-            locationSelected = true
+            //todo fix if viewmodel does not work
+            //locationSelected = true
+            _viewModel.locationSelectedVM.value = true
+
 
         }
     }
@@ -311,7 +318,7 @@ class SelectLocationFragment : BaseFragment(),
 //    }
 
     private fun checkForSetLocationAndNavigate() {
-        if (locationSelected) {
+        if (_viewModel.locationSelectedVM.value == true) {
             onLocationSelected()
         } else {
             _viewModel.showSnackBar.value = getString(R.string.select_poi)

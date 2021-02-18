@@ -14,7 +14,9 @@ You are here graphic:
 "https://www.vecteezy.com/free-vector/you-are-here"
 
 onBackPressedCallback in ReminderDescription activity adapted from Medium article: https://medium.com/@pavan.careers5208/onbackpresseddispatcher-android-2a771f25bd44
-
+Testing in general adapted from the lessons and codelabs
+recyclerview testing code adapted from https://medium.com/@_rpiel/recyclerview-and-espresso-a-complicated-story-3f6f4179652e
+posting a value to the viewmodel in espresso test adapted from https://stackoverflow.com/questions/53304347/mutablelivedata-cannot-invoke-setvalue-on-a-background-thread-from-coroutine
 
 # Location Reminder
 
