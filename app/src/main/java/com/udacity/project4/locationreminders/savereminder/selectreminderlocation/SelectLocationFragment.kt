@@ -1,45 +1,31 @@
 package com.udacity.project4.locationreminders.savereminder.selectreminderlocation
 
 import android.Manifest
-import android.app.Activity
-import android.content.Intent
-import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.location.Location
 import android.os.Build
 import android.os.Bundle
 import android.os.Looper
-import android.util.Log
 import android.view.*
-import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.FragmentActivity
-import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
-import com.google.android.material.snackbar.Snackbar
 import com.udacity.project4.R
-import com.udacity.project4.authentication.AuthenticationActivity
 import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.databinding.FragmentSelectLocationBinding
-import com.udacity.project4.locationreminders.reminderslist.ReminderListFragmentDirections
 import com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel
-import com.udacity.project4.utils.EspressoIdlingResource.wrapEspressoIdlingResource
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.util.*
-import kotlin.concurrent.fixedRateTimer
 
 class SelectLocationFragment : BaseFragment(),
     OnMapReadyCallback {  //, GoogleMap.OnMarkerDragListener add after onmap to implement on drag
@@ -82,11 +68,20 @@ class SelectLocationFragment : BaseFragment(),
                 markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA))
                 currentLocationMarker = map.addMarker(markerOptions)
 
+                setDefaultLocationForReminder(latLng)
+
                 //move map camera
                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0F))
             }
         }
     }
+
+    private fun setDefaultLocationForReminder(latLng: LatLng) {
+        _viewModel.reminderSelectedLocationStr.value = "DEFAULT"
+        _viewModel.longitude.value = latLng.longitude
+        _viewModel.latitude.value=latLng.latitude
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -107,11 +102,10 @@ class SelectLocationFragment : BaseFragment(),
         mapFragment.getMapAsync(this)
 
         binding.btnSaveMapLocation.setOnClickListener {
-            checkForSetLocationAndNavigate()
+           onLocationSelected()
         }
 
-        //set the locationSelected LD to false
-        _viewModel.locationSelectedVM.value = false
+
 
 
 //        DONE: add the map setup implementation
@@ -168,7 +162,8 @@ class SelectLocationFragment : BaseFragment(),
             true
         }
         R.id.save_map_location -> {
-            checkForSetLocationAndNavigate()
+            onLocationSelected()
+            //todo maybe add logic to notify user it is set to default location
             true
         }
         else -> super.onOptionsItemSelected(item)
@@ -245,10 +240,6 @@ class SelectLocationFragment : BaseFragment(),
             _viewModel.latitude.value = poiMarker.position.latitude
             _viewModel.longitude.value = poiMarker.position.longitude
             _viewModel.reminderSelectedLocationStr.value = poiMarker.title
-            //todo fix if viewmodel does not work
-            //locationSelected = true
-            _viewModel.locationSelectedVM.value = true
-
 
         }
     }
@@ -316,14 +307,14 @@ class SelectLocationFragment : BaseFragment(),
 //        Timber.i(marker.position.toString())
 //
 //    }
-
-    private fun checkForSetLocationAndNavigate() {
-        if (_viewModel.locationSelectedVM.value == true) {
-            onLocationSelected()
-        } else {
-            _viewModel.showSnackBar.value = getString(R.string.select_poi)
-        }
-    }
+        //Removed in lieu of setting a default value when ran into testing problem keep JIC
+//    private fun checkForSetLocationAndNavigate() {
+//        if (_viewModel.locationSelectedVM.value == true) {
+//            onLocationSelected()
+//        } else {
+//            _viewModel.showSnackBar.value = getString(R.string.select_poi)
+//        }
+//    }
 
     private fun checkLocationPermission() {
         if (ActivityCompat.checkSelfPermission(

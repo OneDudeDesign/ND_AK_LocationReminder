@@ -17,6 +17,7 @@ onBackPressedCallback in ReminderDescription activity adapted from Medium articl
 Testing in general adapted from the lessons and codelabs
 recyclerview testing code adapted from https://medium.com/@_rpiel/recyclerview-and-espresso-a-complicated-story-3f6f4179652e
 posting a value to the viewmodel in espresso test adapted from https://stackoverflow.com/questions/53304347/mutablelivedata-cannot-invoke-setvalue-on-a-background-thread-from-coroutine
+checking toast visibility adapted from https://www.pluralsight.com/guides/testing-in-android-with-espresso-part-2
 
 # Location Reminder
 

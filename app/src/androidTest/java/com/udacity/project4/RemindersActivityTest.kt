@@ -3,10 +3,14 @@ package com.udacity.project4
 import android.app.Application
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso.closeSoftKeyboard
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.RootMatchers.withDecorView
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
@@ -25,6 +29,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
@@ -47,7 +52,7 @@ class RemindersActivityTest :
 
     private lateinit var repository: ReminderDataSource
     private lateinit var appContext: Application
-
+//TODO add permissions rules as we may not have location permission
 
     /**
      * As we use Koin as a Service Locator Library to develop our code, we'll also use Koin to test our code.
@@ -203,26 +208,42 @@ class RemindersActivityTest :
         //click fab
         onView(withId(R.id.addReminderFAB)).perform(click())
         onView(withId(R.id.selectLocation)).perform(click())
-        //cannot test the map fragment poi selection so fake the LatLng and location data to the viewmodel
-        val saveReminderVm = SaveReminderViewModel(appContext,repository)
-        saveReminderVm.reminderSelectedLocationStr.postValue(reminder.location)
-        saveReminderVm.latitude.postValue(reminder.latitude)
-        saveReminderVm.longitude.postValue(reminder.longitude)
-        //saveReminderVm.locationSelectedVM.postValue(true)
-
-
-        Timber.i("Viewmodel data is: %s %s %s %s",
-            saveReminderVm.reminderSelectedLocationStr.value,
-            saveReminderVm.latitude.value, saveReminderVm.longitude.value,
-            saveReminderVm.locationSelectedVM.value)
-        //go back
-        //this should go back to SaveReminderFragment without popping the error toast as locationselectedVM is set to true
-        //it does not work the data shows in the log as null
+        //cannot test the map fragment poi selection so allowing the LatLng and location data default to stand
+        //map is open go back default should have been set to location
         onView(withId(R.id.btn_save_map_location)).perform(click())
-        //attempt to save fails because the app was blocked from going back toi the save screen due to null values
-        Thread.sleep(5000) //sleep just to slow down to see whats happening do not leave in
+        //should pop toast
         onView(withId(R.id.saveReminder)).perform(click())
-        Thread.sleep(5000)
+        //check for title toast
+        onView(withText(R.string.err_enter_title))
+            .check(matches(withEffectiveVisibility( ViewMatchers.Visibility.VISIBLE)))
+        //need to sleep here because the description toast will not be found due to title toast still displaying
+        Thread.sleep(3000)
+        //if passed to this point set the text
+        onView(withId(R.id.reminderTitle)).check(matches(withHint(R.string.reminder_title)))
+        //Fill the title
+        onView(withId(R.id.reminderTitle)).perform(typeText(reminder2.title))
+        closeSoftKeyboard()
+        onView(withId(R.id.reminderTitle)).check(matches(withText(reminder2.title)))
+        //try to save, should pop toast for Description
+
+        onView(withId(R.id.saveReminder)).perform(click())
+
+        //check for description toast
+        onView(withText(R.string.err_enter_description))
+            .check(matches(withEffectiveVisibility( ViewMatchers.Visibility.VISIBLE)))
+        //enter description
+        Thread.sleep(3000)
+        onView(withId(R.id.reminderDescription)).check(matches(withHint(R.string.reminder_desc)))
+        onView(withId(R.id.reminderDescription)).perform(typeText(reminder2.description))
+        closeSoftKeyboard()
+        //save
+        onView(withId(R.id.saveReminder)).perform(click())
+        //check for reminder saved toast
+
+        onView(withText("Reminder Saved For: DEFAULT"))
+            .check(matches(withEffectiveVisibility( ViewMatchers.Visibility.VISIBLE)))
+
+        Thread.sleep(3000)
 
         activityScenario.close()
 
