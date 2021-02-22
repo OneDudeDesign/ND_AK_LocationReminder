@@ -67,7 +67,7 @@ class ReminderListFragment : BaseFragment() {
     }
 
     private fun setupRecyclerView() {
-//TODO go to different screen with an option to DELETE (remove from list and remove Geofence)
+//DONE go to different screen with an option to DELETE (remove from list and remove Geofence)
         val adapter = RemindersListAdapter {
             //use the navigationCommand live data to navigate between the fragments
             _viewModel.navigationCommand.postValue(

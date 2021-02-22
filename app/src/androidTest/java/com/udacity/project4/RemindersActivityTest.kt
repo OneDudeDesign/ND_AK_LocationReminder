@@ -9,11 +9,18 @@ import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.ComponentNameMatchers.hasShortClassName
+import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.intent.matcher.IntentMatchers.toPackage
 import androidx.test.espresso.matcher.RootMatchers.withDecorView
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
+import com.udacity.project4.authentication.AuthenticationActivity
 import com.udacity.project4.locationreminders.RemindersActivity
 import com.udacity.project4.locationreminders.data.ReminderDataSource
 import com.udacity.project4.locationreminders.data.dto.ReminderDTO
@@ -29,8 +36,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import org.hamcrest.Matchers.`is`
-import org.hamcrest.Matchers.not
+import org.hamcrest.Matchers.*
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -52,7 +58,7 @@ class RemindersActivityTest :
 
     private lateinit var repository: ReminderDataSource
     private lateinit var appContext: Application
-//TODO add permissions rules as we may not have location permission
+
 
     /**
      * As we use Koin as a Service Locator Library to develop our code, we'll also use Koin to test our code.
@@ -113,6 +119,7 @@ class RemindersActivityTest :
 
 
 
+
     private val reminder = ReminderDTO("reminder title","reminder description",
         "Somewhere", 100.10, 55.50)
     private val reminder2 = ReminderDTO("reminder title2","reminder description2",
@@ -121,9 +128,9 @@ class RemindersActivityTest :
         "Somewhere3", 102.10, 65.50)
 
 
-//    TODO: add End to End testing to the app
+//    DONE: add End to End testing to the app
     @Test
-    fun confirmReminderDetailsOnListClick() = runBlocking{
+    fun confirmReminderDetailsOnListClick() = runBlocking {
        //set initial state
         repository.saveReminder(reminder)
 
@@ -196,7 +203,7 @@ class RemindersActivityTest :
     }
 
     @Test
-    fun addNewReminderSuccess() = runBlocking{
+    fun addNewReminderSuccess() = runBlocking {
         //set initial state with a reminder
         repository.saveReminder(reminder)
 
@@ -247,6 +254,28 @@ class RemindersActivityTest :
 
         activityScenario.close()
 
+
+    }
+
+    //test logout
+    @Test
+    fun clickLogoutFiresIntentToAuthenticationActivity() = runBlocking{
+        //set initial state with a reminder
+        repository.saveReminder(reminder)
+
+
+        //Start up reminders view
+        val activityScenario = ActivityScenario.launch(RemindersActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        //start intent listener
+
+        Intents.init()
+        onView(withText("LOGOUT")).perform(click())
+        intended(hasComponent(hasShortClassName(".authentication.AuthenticationActivity")))
+        Intents.release()  //release the intent listener
+
+        activityScenario.close()
 
     }
 

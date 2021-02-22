@@ -163,7 +163,6 @@ class SelectLocationFragment : BaseFragment(),
         }
         R.id.save_map_location -> {
             onLocationSelected()
-            //todo maybe add logic to notify user it is set to default location
             true
         }
         else -> super.onOptionsItemSelected(item)

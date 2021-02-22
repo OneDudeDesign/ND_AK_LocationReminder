@@ -27,7 +27,7 @@ import org.junit.runner.RunWith
 @MediumTest
 class RemindersLocalRepositoryTest {
 
-//    TODO: Add testing implementation to the RemindersLocalRepository.kt
+//    DONE: Add testing implementation to the RemindersLocalRepository.kt
     //create lateinit variables: need DB and Repository, repository needs Dao
     private lateinit var database: RemindersDatabase
     private lateinit var testRepository: RemindersLocalRepository

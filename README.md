@@ -19,6 +19,13 @@ recyclerview testing code adapted from https://medium.com/@_rpiel/recyclerview-a
 posting a value to the viewmodel in espresso test adapted from https://stackoverflow.com/questions/53304347/mutablelivedata-cannot-invoke-setvalue-on-a-background-thread-from-coroutine
 checking toast visibility adapted from https://www.pluralsight.com/guides/testing-in-android-with-espresso-part-2
 
+Fragment testing with scenario https://developer.android.com/reference/kotlin/androidx/fragment/app/testing
+
+Adapted Custom EspressoMatcher for checking the TextviewCompound drawable from : 
+    https://medium.com/@dbottillo/android-ui-test-espresso-matcher-for-imageview-1a28c832626f
+    https://gist.github.com/RyanBurnsworth/9bf15ebd29c321b4e5517b98f5142b99 
+    
+
 # Location Reminder
 
 A Todo list app with location reminders that remind the user to do something when he reaches a specific location. The app will require the user to create an account and login to set and access reminders.
