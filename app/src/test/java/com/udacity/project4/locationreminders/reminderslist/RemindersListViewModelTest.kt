@@ -26,7 +26,7 @@ import org.robolectric.annotation.Config
 @ExperimentalCoroutinesApi
 class RemindersListViewModelTest {
 
-    //TODO: provide testing to the RemindersListViewModel and its live data objects
+    //DONE: provide testing to the RemindersListViewModel and its live data objects
 
     //set the datasource,viewmodel, and context variables
     private lateinit var datasource: FakeDataSource

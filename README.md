@@ -24,6 +24,8 @@ Fragment testing with scenario https://developer.android.com/reference/kotlin/an
 Adapted Custom EspressoMatcher for checking the TextviewCompound drawable from : 
     https://medium.com/@dbottillo/android-ui-test-espresso-matcher-for-imageview-1a28c832626f
     https://gist.github.com/RyanBurnsworth/9bf15ebd29c321b4e5517b98f5142b99 
+
+Viewmodel testing setting config to SDK28 and stopping koin learned from knowledgebase review
     
 
 # Location Reminder
