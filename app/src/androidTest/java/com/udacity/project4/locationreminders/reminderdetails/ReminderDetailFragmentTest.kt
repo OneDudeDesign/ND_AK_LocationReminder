@@ -23,6 +23,7 @@ import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.containsString
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -54,8 +55,8 @@ class ReminderDetailFragmentTest : AutoCloseKoinTest(){
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Before
-    fun init() {
-        stopKoin()//stop the original app koin
+    fun initializeTestParameters() {
+        stopKoin()//stop the original app koin before
         appContext = ApplicationProvider.getApplicationContext()
         val myModule = module {
             single {
@@ -79,6 +80,11 @@ class ReminderDetailFragmentTest : AutoCloseKoinTest(){
             testDataSource.deleteAllReminders()
         }
     }
+//I would think you need to stop koin after each test like the viewmodels testing but causes stack overflow
+//    @After
+//    fun stopKoin(){
+//        stopKoin()
+//    }
 
     //Check for all items visible
     @Test
