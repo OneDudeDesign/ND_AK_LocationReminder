@@ -41,7 +41,6 @@ import org.mockito.Mockito.verify
 
 @RunWith(AndroidJUnit4::class)
 @ExperimentalCoroutinesApi
-//UI Testing
 @MediumTest
 class ReminderListFragmentTest : AutoCloseKoinTest() {
 
@@ -67,8 +66,7 @@ class ReminderListFragmentTest : AutoCloseKoinTest() {
      * As we use Koin as a Service Locator Library to develop our code, we'll also use Koin to test our code.
      * at this step we will initialize Koin related code to be able to use it in our testing.
      */
-    @get: Rule
-    val mainCoroutineRule = MainCoroutineRule()
+
 
     @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
@@ -104,7 +102,7 @@ class ReminderListFragmentTest : AutoCloseKoinTest() {
 
     @Test
     fun fragmentDisplayedNoDataIndicated() {
-        //Given - scenario with navcontroller and no data
+        //Given - scenario with no data
         val scenario = launchFragmentInContainer<ReminderListFragment>(Bundle(), R.style.AppTheme)
 
         //when - we have the fragment
@@ -121,7 +119,7 @@ class ReminderListFragmentTest : AutoCloseKoinTest() {
 
     @Test
     fun fragmentDisplayedwithDataItems() {
-        //Given - scenario with navcontroller and data items
+        //Given - scenario with data items
 
         runBlocking {
             testDataSource.saveReminder(reminder)
