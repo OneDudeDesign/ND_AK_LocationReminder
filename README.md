@@ -1,3 +1,10 @@
+REVIEWER, YOU NEED TO SETUP API KEY PLEASE
+the google api ke needs to go into the google_maps_api.xml file
+
+fyi there are some extraneous comments throught the code where I may want to add a future feature or tried to document wehat I was doing
+for later use, this is a challenging project that I will want to review later for use in other apps.
+THANK YOU FOR YOUR TIME REVIEWING
+
 #Attributions
 - Blood
 -sweat
