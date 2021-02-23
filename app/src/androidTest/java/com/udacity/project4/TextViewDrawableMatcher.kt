@@ -4,7 +4,6 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.view.View
-import android.widget.ImageView
 import android.widget.TextView
 import org.hamcrest.Description
 import org.hamcrest.Matcher

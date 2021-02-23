@@ -13,7 +13,6 @@ import com.udacity.project4.databinding.FragmentRemindersBinding
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import com.udacity.project4.utils.setTitle
 import com.udacity.project4.utils.setup
-import kotlinx.android.synthetic.main.it_reminder.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ReminderListFragment : BaseFragment() {
@@ -23,7 +22,7 @@ class ReminderListFragment : BaseFragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding =
             DataBindingUtil.inflate(
                 inflater,
@@ -74,16 +73,7 @@ class ReminderListFragment : BaseFragment() {
                 NavigationCommand.To(ReminderListFragmentDirections.actionReminderListFragmentToReminderDetailFragment(it)
                 )
             )
-
-        //reminder ->
-
-//            startActivity(
-//                ReminderDescriptionActivity.newIntent(context!!, reminder).apply {
-//                    putExtra( EXTRA_ReminderDataItem, reminder)
-//                }
-//            )
         }
-
 
 //        setup the recycler view using the extension function
         binding.remindersRecyclerView.setup(adapter)

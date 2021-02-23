@@ -16,7 +16,6 @@ import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.GeofencingRequest
 import com.google.android.gms.location.LocationServices
 import com.udacity.project4.R
-import com.udacity.project4.authentication.AuthenticationActivity
 import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.databinding.FragmentSaveReminderBinding
@@ -130,6 +129,10 @@ class SaveReminderFragment : BaseFragment() {
         geofencingClient = LocationServices.getGeofencingClient(requireContext())
         geofencingClient.addGeofences(geofencingRequest, geofencePendingIntent)?.run {
             addOnSuccessListener {
+
+                //I do not add the reminder to the DB unless the geofence is there otherwise
+                //the user might think they have set a reminder when in reality there is no geofence
+                //and it will never alert
                 addReminderToDb(reminder)
             }
             addOnFailureListener {
@@ -154,8 +157,8 @@ class SaveReminderFragment : BaseFragment() {
                 Manifest.permission.ACCESS_BACKGROUND_LOCATION
             ) -> {
                 val dialog = AlertDialog.Builder(requireContext())
-                dialog.setTitle("Allow Location Access \"All The Time\"")
-                dialog.setMessage("You must allow location access \"All the time\" in order to save the POI and enable reminders using Geo Fencing")
+                dialog.setTitle(getString(R.string.allow_location_all_time))
+                dialog.setMessage(getString(R.string.must_allow_location))
                 dialog.setPositiveButton(android.R.string.ok, null)
                 dialog.setOnDismissListener {
                     ActivityCompat.requestPermissions(
@@ -208,10 +211,8 @@ class SaveReminderFragment : BaseFragment() {
             }
             dialog.show()
 
-
         } else {
             return
-
         }
     }
 

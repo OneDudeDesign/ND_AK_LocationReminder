@@ -103,45 +103,49 @@ class RemindersActivityTest :
     }
 
     @After
-    fun unRegisterIdlingResource(){
+    fun unRegisterIdlingResource() {
         IdlingRegistry.getInstance().unregister(EspressoIdlingResource.countingIdlingResource)
         IdlingRegistry.getInstance().unregister(dataBindingIdlingResource)
     }
 
 
+    private val reminder = ReminderDTO(
+        "reminder title", "reminder description",
+        "Somewhere", 100.10, 55.50
+    )
+    private val reminder2 = ReminderDTO(
+        "reminder title2", "reminder description2",
+        "Somewhere2", 101.10, 45.50
+    )
+    private val reminder3 = ReminderDTO(
+        "reminder title3", "reminder description3",
+        "Somewhere3", 102.10, 65.50
+    )
 
 
-    private val reminder = ReminderDTO("reminder title","reminder description",
-        "Somewhere", 100.10, 55.50)
-    private val reminder2 = ReminderDTO("reminder title2","reminder description2",
-        "Somewhere2", 101.10, 45.50)
-    private val reminder3 = ReminderDTO("reminder title3","reminder description3",
-        "Somewhere3", 102.10, 65.50)
-
-
-//    DONE: add End to End testing to the app
+    //    DONE: add End to End testing to the app
     @Test
     fun confirmReminderDetailsOnListClick() = runBlocking {
-       //set initial state
+        //set initial state
         repository.saveReminder(reminder)
 
-    //Start up reminders view
-    val activityScenario = ActivityScenario.launch(RemindersActivity::class.java)
-    dataBindingIdlingResource.monitorActivity(activityScenario)
+        //Start up reminders view
+        val activityScenario = ActivityScenario.launch(RemindersActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
 
-    //check the details when list item clicked
-    //click the entered
-    onView(withText("Somewhere")).perform(click())
-    onView(withId(R.id.rdf_title)).check(matches(withText("reminder title")))
-    onView(withId(R.id.rdf_description)).check(matches(withText("reminder description")))
-    onView(withId(R.id.rdf_location)).check(matches(withText("Somewhere")))
+        //check the details when list item clicked
+        //click the entered
+        onView(withText("Somewhere")).perform(click())
+        onView(withId(R.id.rdf_title)).check(matches(withText("reminder title")))
+        onView(withId(R.id.rdf_description)).check(matches(withText("reminder description")))
+        onView(withId(R.id.rdf_location)).check(matches(withText("Somewhere")))
 
-    activityScenario.close()
+        activityScenario.close()
 
     }
 
     @Test
-    fun confirmItemRemainsOnSave() = runBlocking{
+    fun confirmItemRemainsOnSave() = runBlocking {
         //set initial state with 3 reminders
         repository.saveReminder(reminder)
         repository.saveReminder(reminder2)
@@ -152,7 +156,7 @@ class RemindersActivityTest :
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
         //click reminder2
-       onView(withText("Somewhere2")).perform(click())
+        onView(withText("Somewhere2")).perform(click())
         onView(withId(R.id.rdf_title)).check(matches(withText("reminder title2")))
         onView(withId(R.id.rdf_description)).check(matches(withText("reminder description2")))
         onView(withId(R.id.rdf_location)).check(matches(withText("Somewhere2")))
@@ -168,7 +172,7 @@ class RemindersActivityTest :
 
 
     @Test
-    fun confirmItemIsDeleted() = runBlocking{
+    fun confirmItemIsDeleted() = runBlocking {
         //set initial state with 3 reminders
         repository.saveReminder(reminder)
         repository.saveReminder(reminder2)
@@ -195,6 +199,8 @@ class RemindersActivityTest :
 
     @Test
     fun addNewReminderSuccess() = runBlocking {
+        //FYI WITHOUT the sleep the test fails because the Snackbar stays on the screen and interferes
+        //cannot find a way around it yet
         //set initial state with a reminder
         repository.saveReminder(reminder)
 
@@ -213,7 +219,7 @@ class RemindersActivityTest :
         onView(withId(R.id.saveReminder)).perform(click())
         //check for title toast
         onView(withText(R.string.err_enter_title))
-            .check(matches(withEffectiveVisibility( ViewMatchers.Visibility.VISIBLE)))
+            .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
         //need to sleep here because the description toast will not be found due to title toast still displaying
         Thread.sleep(3000)
         //if passed to this point set the text
@@ -228,7 +234,7 @@ class RemindersActivityTest :
 
         //check for description toast
         onView(withText(R.string.err_enter_description))
-            .check(matches(withEffectiveVisibility( ViewMatchers.Visibility.VISIBLE)))
+            .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
         //enter description
         Thread.sleep(3000)
         onView(withId(R.id.reminderDescription)).check(matches(withHint(R.string.reminder_desc)))
@@ -239,7 +245,7 @@ class RemindersActivityTest :
         //check for reminder saved toast
 
         onView(withText("Reminder Saved For: DEFAULT"))
-            .check(matches(withEffectiveVisibility( ViewMatchers.Visibility.VISIBLE)))
+            .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
 
         Thread.sleep(3000)
 
@@ -250,7 +256,7 @@ class RemindersActivityTest :
 
     //test logout
     @Test
-    fun clickLogoutFiresIntentToAuthenticationActivity() = runBlocking{
+    fun clickLogoutFiresIntentToAuthenticationActivity() = runBlocking {
         //set initial state with a reminder
         repository.saveReminder(reminder)
 
@@ -269,7 +275,6 @@ class RemindersActivityTest :
         activityScenario.close()
 
     }
-
 
 
 }

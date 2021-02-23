@@ -49,6 +49,8 @@
     <string name="permission_denied_always">Location permission must be allow always for geofencing reminders!</string>
     <string name="reminder_detail_title">Reminder Details</string>
     <string name="reminder_detail_heading">You set a reminder for:</string>
+    <string name="allow_location_all_time">Allow Location Access \"All The Time\"</string>
+    <string name="must_allow_location">You must allow location access \"All the time\" in order to save the POI and enable reminders using Geo Fencing</string>
 
     <!-- reminder detailsfragment -->
     <string name="rdf_location_head">Location:</string>

@@ -45,7 +45,6 @@ fun sendNotification(context: Context, reminderDataItem: ReminderDataItem) {
         .setDestination(R.id.reminderDetailFragment)
         .setArguments(bundle)
         .createTaskStackBuilder()
-        //.createPendingIntent()
 
 
     //create a pending intent that opens ReminderDescriptionActivity when the user clicks on the notification

@@ -5,7 +5,6 @@ import com.udacity.project4.locationreminders.data.dto.ReminderDTO
 import com.udacity.project4.locationreminders.data.dto.Result
 import com.udacity.project4.utils.EspressoIdlingResource.wrapEspressoIdlingResource
 import kotlinx.coroutines.*
-import timber.log.Timber
 
 /**
  * Concrete implementation of a data source as a db.

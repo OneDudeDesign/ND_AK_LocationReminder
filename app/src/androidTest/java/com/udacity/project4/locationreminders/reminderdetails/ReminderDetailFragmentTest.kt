@@ -23,7 +23,6 @@ import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.containsString
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -141,7 +140,7 @@ class ReminderDetailFragmentTest : AutoCloseKoinTest(){
         verify(navController).popBackStack()
         //note: it will not navigate on screen as we are testing the fragment but the toast for removal notification will pop so test for it
         onView(withText(appContext.getString(R.string.reminder_removed)+ " " + reminder.location))
-            .check(matches(withEffectiveVisibility( ViewMatchers.Visibility.VISIBLE)))
+            .check(matches(withEffectiveVisibility( Visibility.VISIBLE)))
 
     }
 

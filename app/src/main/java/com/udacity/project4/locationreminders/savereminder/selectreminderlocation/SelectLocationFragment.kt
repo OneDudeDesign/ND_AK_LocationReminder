@@ -25,10 +25,9 @@ import com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import org.koin.android.ext.android.inject
 import timber.log.Timber
-import java.util.*
 
 class SelectLocationFragment : BaseFragment(),
-    OnMapReadyCallback {  //, GoogleMap.OnMarkerDragListener add after onmap to implement on drag
+    OnMapReadyCallback {  //, GoogleMap.OnMarkerDragListener add after onmap to implement on drag future feature
 
     //Use Koin to get the view model of the SaveReminder
     override val _viewModel: SaveReminderViewModel by inject()
@@ -39,14 +38,7 @@ class SelectLocationFragment : BaseFragment(),
     private var currentLocationMarker: Marker? = null
     private var fusedLocationProviderClient: FusedLocationProviderClient? = null
 
-    //values below for dropping a pin that is not a POI FUTURE IMPLEMENTATION
-    //private lateinit var marker: Marker
-    //private lateinit var markerStart: Marker
-    //private lateinit var markerEnd: Marker
-    //private var poiMarker: Marker
-    private var locationSelected = false
     private val REQUEST_LOCATION_PERMISSION = 211
-    private var marker = Any()
 
     private var locationCallback: LocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
@@ -75,7 +67,7 @@ class SelectLocationFragment : BaseFragment(),
             }
         }
     }
-
+    //setting a default location in case the user navigates away without selecting
     private fun setDefaultLocationForReminder(latLng: LatLng) {
         _viewModel.reminderSelectedLocationStr.value = "DEFAULT"
         _viewModel.longitude.value = latLng.longitude
@@ -182,26 +174,10 @@ class SelectLocationFragment : BaseFragment(),
         //permissions check here might be overkill but it is conceivable the app was opened to the list
         //gaining permissions then the permissions were revoked..
         enableMyLocation()
-
-//        val latitude = 48.02870
-//        val longitude = -122.13355
-//        val zoomLevel = 15f
-//        val location = map.myLocation
-//
-//        val homeLatLng = LatLng(location.latitude, location.longitude)
-//
-//        map.moveCamera(CameraUpdateFactory.newLatLngZoom(homeLatLng, zoomLevel))
-//
-//        map.addMarker(MarkerOptions().position(homeLatLng))
-
-        //set this later for nonPOI marker and draggability
-        //map.setOnMarkerDragListener(this)
-
-        //setMapLongClick(map)
     }
 
 
-//use for setting a non poi location later
+//use for setting a non poi location later...users may want to set a reminder on a trail that has no poi :)
 //    private fun setMapLongClick(map: GoogleMap) {
 //        map.setOnMapLongClickListener { latLng ->
 //            // A Snippet is Additional text that's displayed below the title.
@@ -291,7 +267,7 @@ class SelectLocationFragment : BaseFragment(),
         }
     }
 
-//overrides for marker drag
+//overrides for marker drag FUTURE IMPLEMENTATION
 //    override fun onMarkerDragStart(p0: Marker?) {
 //
 //    }
