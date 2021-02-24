@@ -67,11 +67,12 @@ class SelectLocationFragment : BaseFragment(),
             }
         }
     }
+
     //setting a default location in case the user navigates away without selecting
     private fun setDefaultLocationForReminder(latLng: LatLng) {
         _viewModel.reminderSelectedLocationStr.value = "DEFAULT"
         _viewModel.longitude.value = latLng.longitude
-        _viewModel.latitude.value=latLng.latitude
+        _viewModel.latitude.value = latLng.latitude
     }
 
 
@@ -94,21 +95,14 @@ class SelectLocationFragment : BaseFragment(),
         mapFragment.getMapAsync(this)
 
         binding.btnSaveMapLocation.setOnClickListener {
-           onLocationSelected()
+            onLocationSelected()
         }
-
-
 
 
 //        DONE: add the map setup implementation
 //        DONE: zoom to the user location after taking his permission
 //        DONE: add style to the map
 //        DONE: put a marker to location that the user selected
-
-
-//        DONE: call this function after the user confirms on the selected location
-        //onLocationSelected()
-
         return binding.root
     }
 
@@ -170,9 +164,7 @@ class SelectLocationFragment : BaseFragment(),
         locationRequest.fastestInterval = 120000
         locationRequest.priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
 
-        //once the map is ready check permissions again and ebnnable the location with fused location provider
-        //permissions check here might be overkill but it is conceivable the app was opened to the list
-        //gaining permissions then the permissions were revoked..
+
         enableMyLocation()
     }
 
@@ -282,7 +274,7 @@ class SelectLocationFragment : BaseFragment(),
 //        Timber.i(marker.position.toString())
 //
 //    }
-        //Removed in lieu of setting a default value when ran into testing problem keep JIC
+    //Removed in lieu of setting a default value when ran into testing problem keep JIC
 //    private fun checkForSetLocationAndNavigate() {
 //        if (_viewModel.locationSelectedVM.value == true) {
 //            onLocationSelected()
@@ -321,7 +313,9 @@ class SelectLocationFragment : BaseFragment(),
                     requireActivity(),
                     arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                     REQUEST_LOCATION_PERMISSION
+
                 )
+                enableMyLocation()
             }
         }
     }
@@ -340,13 +334,8 @@ class SelectLocationFragment : BaseFragment(),
                             Manifest.permission.ACCESS_FINE_LOCATION
                         ) == PackageManager.PERMISSION_GRANTED
                     ) {
+                        enableMyLocation()
 
-                        fusedLocationProviderClient?.requestLocationUpdates(
-                            locationRequest,
-                            locationCallback,
-                            Looper.myLooper()
-                        )
-                        map.setMyLocationEnabled(true)
                     }
 
                 } else {
@@ -358,5 +347,4 @@ class SelectLocationFragment : BaseFragment(),
             }
         }
     }
-
 }

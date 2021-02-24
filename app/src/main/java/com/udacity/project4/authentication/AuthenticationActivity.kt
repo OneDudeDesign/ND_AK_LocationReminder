@@ -47,53 +47,7 @@ class AuthenticationActivity : AppCompatActivity() {
 
         btn_login_auth_act.background.alpha = 127
         btn_login_auth_act.setOnClickListener { checkForAuthenticatedUser() }
-        btn_login_auth_act.isClickable = false
     }
-
-    override fun onStart() {
-        super.onStart()
-        checkFineLocationPermissions()
-    }
-
-
-
-    private fun checkFineLocationPermissions() {
-        when {
-            ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED -> {
-                    btn_login_auth_act.isClickable = true
-            }
-
-            ActivityCompat.shouldShowRequestPermissionRationale(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) -> {
-                val dialog = AlertDialog.Builder(this)
-                dialog.setTitle(R.string.location_required_error)
-                dialog.setMessage(R.string.fine_location_denied_explanation)
-                dialog.setPositiveButton(android.R.string.ok, null)
-                dialog.setOnDismissListener {
-                    ActivityCompat.requestPermissions(
-                        this,
-                        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                        FINE_LOCATION_PERMISSION_REQUEST_CODE
-                    )
-                }
-                dialog.show()
-
-            }
-            else -> {
-                ActivityCompat.requestPermissions(
-                    this,
-                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                    FINE_LOCATION_PERMISSION_REQUEST_CODE
-                )
-            }
-        }
-    }
-
 
     private fun checkForAuthenticatedUser() {
         val auth = FirebaseAuth.getInstance()
@@ -157,42 +111,6 @@ class AuthenticationActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-       Timber.i("$TAG, onRequestPermissionResult")
-
-        if (
-            grantResults.isEmpty() ||
-            grantResults[0] == PackageManager.PERMISSION_DENIED
-        ) {
-            // Permission denied.
-
-            val dialog = AlertDialog.Builder(this)
-            dialog.setTitle(R.string.location_required_error)
-            dialog.setMessage(R.string.fine_location_denied_explanation)
-            dialog.setPositiveButton(android.R.string.ok, null)
-            dialog.setOnDismissListener {
-                ActivityCompat.requestPermissions(
-                    this,
-                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                    FINE_LOCATION_PERMISSION_REQUEST_CODE
-                )
-            }
-            dialog.show()
-
-
-        }
-
-         else {
-            Timber.i("Permissions: %s", permissions[0])
-            btn_login_auth_act.isClickable = true
-
-        }
-    }
 
 }
 
